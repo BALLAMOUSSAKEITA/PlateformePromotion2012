@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#1e5a3a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>AAES - Anciens Élèves de Siguiri | Carte Membre Virtuelle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --green-900: #0f2e1a;
+            --green-800: #1a3a18;
+            --green-700: #1e5a3a;
+            --green-600: #236b3c;
+            --green-500: #2C7A47;
+            --green-400: #3c9e55;
+            --green-300: #5aa36d;
+            --green-200: #a4d4a8;
+            --green-100: #e0ebd6;
+            --green-50: #f0f5ec;
+            --gold-600: #a07430;
+            --gold-500: #c9a445;
+            --gold-400: #e6c684;
+            --gold-200: #f3ebd2;
+            --gold-100: #fef3e0;
+            --gold-50: #fffbf0;
+            --radius-sm: 0.75rem;
+            --radius-md: 1rem;
+            --radius-lg: 1.5rem;
+            --radius-xl: 2rem;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.16);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --touch-min: 44px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--green-50);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =============================================
+           MOBILE-FIRST: BASE = MOBILE (< 640px)
+           ============================================= */
+
+        /* --- NAVBAR --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid rgba(70,120,60,0.12);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+            color: var(--green-500);
+        }
+
+        .logo h2 {
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(120deg, #1e4a2f, #3b8a4c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            border: none;
+            background: none;
+            min-width: var(--touch-min);
+            min-height: var(--touch-min);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2.5px;
+            background: var(--green-700);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+        .nav-links {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            z-index: 99;
+        }
+
+        .nav-links.open {
+            display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            color: var(--green-800);
+            font-size: 1.25rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            transition: 0.2s;
+            min-height: var(--touch-min);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a:active { background: var(--green-100); }
+
+        .btn-nav {
+            background: var(--green-600) !important;
+            color: white !important;
+            padding: 0.85rem 2rem !important;
+            border-radius: var(--radius-full) !important;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-close-area {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        /* --- HERO --- */
+        .hero-section {
+            padding: 2rem 1.25rem 1.5rem;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: var(--green-800);
+            margin-bottom: 0.8rem;
+        }
+
+        .hero-highlight {
+            background: linear-gradient(120deg, var(--green-500), var(--green-300));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-content p {
+            color: #4a6741;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            min-width: 90px;
+        }
+
+        .stat-number {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--green-600);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: #6f8a66;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .hero-image {
+            display: none;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--green-700), var(--green-500));
+            border: none;
+            padding: 14px 28px;
+            border-radius: var(--radius-full);
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 6px 18px rgba(33,99,44,0.25);
+            min-height: var(--touch-min);
+        }
+
+        .cta-button:active {
+            transform: scale(0.97);
+        }
+
+        /* --- PLATFORM SECTION --- */
+        .platform-section {
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            padding: 1.5rem 1rem 2rem;
+            margin-top: 0.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--green-800);
+        }
+
+        .section-title i { margin-right: 6px; }
+
+        /* --- TABS MOBILE --- */
+        .tab-nav {
+            display: flex;
+            background: var(--green-50);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            margin-bottom: 1.25rem;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #6f8a66;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: var(--touch-min);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--green-700);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* --- FORM --- */
+        .form-card {
+            background: var(--green-50);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+        }
+
+        .form-card h3 {
+            color: var(--green-800);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #2d4628;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+
+        label i { margin-right: 4px; color: var(--green-400); }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid #e0e9d9;
+            background: white;
+            font-size: 16px; /* prevent iOS zoom */
+            transition: all 0.2s;
+            outline: none;
+            min-height: var(--touch-min);
+        }
+
+        input:focus {
+            border-color: var(--green-400);
+            box-shadow: 0 0 0 3px rgba(60,158,85,0.12);
+        }
+
+        input::placeholder { color: #b0c4a8; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--green-700), var(--green-500));
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            min-height: 48px;
+            box-shadow: 0 4px 14px rgba(33,99,44,0.2);
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+
+        .form-hint {
+            font-size: 0.7rem;
+            margin-top: 12px;
+            text-align: center;
+            color: #5c7c52;
+        }
+
+        /* --- MEMBER LIST --- */
+        .members-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .members-header h3 {
+            color: var(--green-800);
+            font-size: 1rem;
+        }
+
+        .members-count-badge {
+            background: var(--green-100);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--green-600);
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+
+        .search-bar input {
+            padding-left: 40px;
+            background: var(--green-50);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a88e;
+            font-size: 0.85rem;
+        }
+
+        .member-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            max-height: 60vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 2px;
+            scroll-behavior: smooth;
+        }
+
+        .member-item {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid var(--green-100);
+            transition: all 0.2s;
+            cursor: pointer;
+            min-height: var(--touch-min);
+        }
+
+        .member-item:active {
+            background: var(--green-50);
+            transform: scale(0.99);
+        }
+
+        .member-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green-500), var(--green-300));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .member-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .member-info h4 {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--green-800);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .member-info p {
+            font-size: 0.7rem;
+            color: #7a9072;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .member-item .arrow-icon {
+            color: #b5c8ad;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .member-list-hint {
+            font-size: 0.68rem;
+            margin-top: 10px;
+            text-align: center;
+            color: #95a88e;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: #95a88e;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: block;
+            color: var(--green-200);
+        }
+
+        /* --- MODAL (Bottom Sheet on Mobile) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 200;
+        }
+
+        .modal-overlay.open {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            max-height: 92vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            z-index: 201;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            padding-bottom: var(--safe-bottom);
+        }
+
+        .modal-sheet.open {
+            transform: translateY(0);
+        }
+
+        .sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 4px;
+            margin: 10px auto 6px;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1.25rem 0.75rem;
+            border-bottom: 1px solid var(--green-100);
+        }
+
+        .sheet-header h3 {
+            font-size: 1rem;
+            color: var(--green-800);
+        }
+
+        .close-sheet {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--green-50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--green-700);
+            cursor: pointer;
+            min-width: var(--touch-min);
+            min-height: var(--touch-min);
+        }
+
+        .sheet-body {
+            padding: 1rem 1.25rem 1.5rem;
+        }
+
+        /* --- PREMIUM CARD --- */
+        .premium-card {
+            background: linear-gradient(145deg, #ffffff 0%, var(--gold-50) 100%);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(210,180,110,0.35);
+        }
+
+        .card-accent {
+            height: 8px;
+            background: linear-gradient(90deg, var(--gold-500), var(--gold-400), var(--gold-500));
+        }
+
+        .card-header-premium {
+            padding: 1rem 1.25rem 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid var(--gold-200);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .school-name {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #8b6942;
+            background: var(--gold-100);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+        }
+
+        .promo-stamp {
+            background: #cb842e;
+            color: white;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .member-name-premium {
+            font-size: 1.3rem;
+            font-weight: 800;
+            padding: 0.75rem 1.25rem 0.2rem;
+            color: var(--green-800);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            word-break: break-word;
+        }
+
+        .details-grid {
+            padding: 0.75rem 1rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+            background: var(--gold-50);
+            margin: 0.6rem 0.8rem;
+            border-radius: var(--radius-md);
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            color: #3f5a38;
+            font-weight: 500;
+            overflow: hidden;
+        }
+
+        .detail-item i {
+            width: 20px;
+            color: var(--gold-600);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .detail-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-footer-premium {
+            padding: 0.6rem 1.25rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px dashed var(--gold-200);
+            margin-top: 0.2rem;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 0.72rem;
+        }
+
+        .qr-sim-code {
+            background: var(--green-900);
+            color: var(--gold-400);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-family: 'Courier New', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .card-status-badge {
+            font-size: 0.68rem;
+            background: var(--gold-200);
+            padding: 3px 10px;
+            border-radius: var(--radius-full);
+        }
+
+        .download-btn-modal {
+            background: linear-gradient(135deg, var(--green-700), var(--green-500));
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-full);
+            color: white;
+            font-weight: 700;
+            margin-top: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            box-shadow: 0 4px 14px rgba(33,99,44,0.2);
+            min-height: 48px;
+        }
+
+        .download-btn-modal:active { transform: scale(0.98); }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            padding-bottom: calc(1.5rem + var(--safe-bottom));
+            font-size: 0.7rem;
+            color: #6f8a66;
+            border-top: 1px solid var(--green-100);
+            background: white;
+        }
+
+        /* --- TOAST --- */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--green-800);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: slideUp 0.35s ease forwards;
+        }
+
+        /* --- SCROLLBAR THIN --- */
+        .member-list-container::-webkit-scrollbar { width: 3px; }
+        .member-list-container::-webkit-scrollbar-track { background: transparent; }
+        .member-list-container::-webkit-scrollbar-thumb { background: var(--green-200); border-radius: 4px; }
+        .modal-sheet::-webkit-scrollbar { width: 3px; }
+        .modal-sheet::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+
+        /* =============================================
+           TABLET (>= 640px)
+           ============================================= */
+        @media (min-width: 640px) {
+            .navbar { padding: 0.8rem 2rem; }
+            .hero-section { padding: 2.5rem 2rem; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .hero-content p { font-size: 1rem; }
+            .stat-number { font-size: 1.75rem; }
+            .platform-section { padding: 2rem; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+            .details-grid { grid-template-columns: 1fr 1fr; }
+            .member-name-premium { font-size: 1.5rem; }
+
+            .modal-sheet {
+                max-width: 520px;
+                left: 50%;
+                transform: translateX(-50%) translateY(100%);
+                border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            }
+            .modal-sheet.open {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* =============================================
+           DESKTOP (>= 1024px)
+           ============================================= */
+        @media (min-width: 1024px) {
+            .hamburger { display: none; }
+
+            .nav-links {
+                display: flex !important;
+                position: static;
+                background: transparent;
+                flex-direction: row;
+                gap: 1.5rem;
+                backdrop-filter: none;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .nav-close-area { display: none; }
+
+            .navbar { padding: 0.8rem 5%; }
+
+            .hero-section {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                padding: 3.5rem 5%;
+                text-align: left;
+                gap: 2rem;
+            }
+
+            .hero-content { flex: 1; min-width: 320px; }
+            .hero-content h1 { font-size: 2.8rem; }
+            .hero-content p { margin-left: 0; margin-right: 0; }
+
+            .hero-stats {
+                justify-content: flex-start;
+                gap: 2rem;
+            }
+
+            .hero-image {
+                display: flex;
+                flex: 0 0 auto;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-image i {
+                font-size: 10rem;
+                color: var(--green-500);
+                opacity: 0.75;
+                filter: drop-shadow(0 16px 24px rgba(0,0,0,0.1));
+                transition: transform 0.3s;
+            }
+
+            .hero-image i:hover { transform: translateY(-6px); }
+
+            .platform-section { padding: 2.5rem 5%; }
+
+            .tab-nav { display: none; }
+
+            .tab-content { display: block !important; animation: none !important; }
+
+            .platform-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .member-list-container { max-height: 480px; }
+
+            .modal-sheet {
+                position: fixed;
+                top: 50%;
+                bottom: auto;
+                left: 50%;
+                max-width: 540px;
+                border-radius: var(--radius-xl);
+                transform: translate(-50%, -50%) scale(0.95);
+                opacity: 0;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+                max-height: 90vh;
+            }
+            .modal-sheet.open {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            .sheet-handle { display: none; }
+        }
+
+        /* =============================================
+           LARGE DESKTOP (>= 1280px)
+           ============================================= */
+        @media (min-width: 1280px) {
+            .hero-content h1 { font-size: 3.2rem; }
+            .hero-image i { font-size: 12rem; }
+            .navbar { padding: 1rem 6%; }
+            .hero-section { padding: 4rem 6%; }
+            .platform-section { padding: 3rem 6%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        <h2>AAES · Siguiri</h2>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+        <div class="nav-close-area">
+            <button class="close-sheet" id="navCloseBtn" aria-label="Fermer le menu"><i class="fas fa-times"></i></button>
+        </div>
+        <a href="#" onclick="closeNav()">Accueil</a>
+        <a href="#plateforme" onclick="closeNav()">Communauté</a>
+        <a href="#plateforme" class="btn-nav" onclick="switchTab('inscription'); closeNav()">Adhérer</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>Générez votre <span class="hero-highlight">carte de membre</span> et rejoignez l'aventure</h1>
+        <p>Plateforme officielle de l'Association des Anciens Élèves de Siguiri. Inscrivez-vous, recevez votre carte virtuelle premium et restez connecté avec votre promotion.</p>
+        <div class="hero-stats">
+            <div class="stat"><span class="stat-number" id="statMembres">0</span><span class="stat-label">Membres actifs</span></div>
+            <div class="stat"><span class="stat-number">2012</span><span class="stat-label">Promotion</span></div>
+            <div class="stat"><span class="stat-number">+5</span><span class="stat-label">Pays</span></div>
+        </div>
+        <button class="cta-button" onclick="document.getElementById('plateforme').scrollIntoView({behavior:'smooth'}); switchTab('inscription');">
+            <i class="fas fa-id-card"></i> Créer ma carte
+        </button>
+    </div>
+    <div class="hero-image"><i class="fas fa-id-card"></i></div>
+</section>
+
+<!-- PLATFORM -->
+<section class="platform-section" id="plateforme">
+    <div class="section-title"><i class="fas fa-users"></i> Espace adhérents</div>
+
+    <!-- Tabs for mobile -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="inscription" onclick="switchTab('inscription')">
+            <i class="fas fa-edit"></i> S'inscrire
+        </button>
+        <button class="tab-btn" data-tab="membres" onclick="switchTab('membres')">
+            <i class="fas fa-address-book"></i> Membres
+        </button>
+    </div>
+
+    <div class="platform-grid">
+        <!-- Formulaire -->
+        <div class="tab-content active" id="tab-inscription">
+            <div class="form-card" id="inscription">
+                <h3><i class="fas fa-edit"></i> Nouvelle adhésion</h3>
+                <form id="memberForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nom complet</label>
+                        <input type="text" id="fullName" placeholder="Fatoumata Kourouma" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" placeholder="contact@ancien2012.org" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Téléphone</label>
+                        <input type="tel" id="phone" placeholder="+224 601 23 45 67" required autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-briefcase"></i> Profession</label>
+                        <input type="text" id="profession" placeholder="Ingénieur, Médecin..." required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Ville</label>
+                        <input type="text" id="city" placeholder="Siguiri, Conakry, Paris..." required>
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-id-card"></i> S'inscrire & obtenir ma carte</button>
+                </form>
+                <p class="form-hint"><i class="fas fa-shield-alt"></i> Carte nominative premium générée automatiquement</p>
+            </div>
+        </div>
+
+        <!-- Liste membres -->
+        <div class="tab-content" id="tab-membres">
+            <div class="members-header">
+                <h3><i class="fas fa-address-book"></i> Membres</h3>
+                <span class="members-count-badge" id="membersCount">0</span>
+            </div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher un membre...">
+            </div>
+            <div id="memberListContainer" class="member-list-container">
+                <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> Chargement...</div>
+            </div>
+            <p class="member-list-hint"><i class="fas fa-hand-pointer"></i> Appuyez sur un membre pour voir sa carte</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <i class="fas fa-tree"></i> Association des Anciens Élèves de Siguiri — Promotion 2012 — Unité, Partage, Excellence
+</footer>
+
+<!-- MODAL BOTTOM SHEET -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="modal-sheet" id="modalSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+        <h3><i class="fas fa-id-card"></i> Carte membre</h3>
+        <button class="close-sheet" id="closeSheetBtn" aria-label="Fermer"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sheet-body">
+        <div id="dynamicCardArea"></div>
+        <button id="downloadCardBtn" class="download-btn-modal"><i class="fas fa-camera"></i> Télécharger la carte (PNG)</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // ---------- NAVIGATION MOBILE ----------
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+    const navCloseBtn = document.getElementById('navCloseBtn');
+
+    hamburgerBtn.addEventListener('click', () => {
+        hamburgerBtn.classList.toggle('active');
+        navLinks.classList.toggle('open');
+        document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+    });
+
+    navCloseBtn.addEventListener('click', closeNav);
+
+    function closeNav() {
+        hamburgerBtn.classList.remove('active');
+        navLinks.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    // ---------- TABS MOBILE ----------
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+        const content = document.getElementById(`tab-${tabName}`);
+        if (btn) btn.classList.add('active');
+        if (content) content.classList.add('active');
+    }
+
+    // ---------- TOAST ----------
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // ---------- MEMBERS (localStorage) ----------
+    let membres = [];
+
+    function loadFromStorage() {
+        const stored = localStorage.getItem("siguiri_promo2012_membres_v3");
+        if (stored) {
+            try { membres = JSON.parse(stored); } catch { membres = []; }
+        }
+        if (!membres || membres.length === 0) {
+            membres = [
+                { id: "m_demo1", nom: "Mariam Sylla", email: "mariam.sylla@aaes.org", telephone: "+224 611 234 567", profession: "Consultante en développement", ville: "Conakry", dateInscription: new Date().toISOString() },
+                { id: "m_demo2", nom: "Ibrahim Touré", email: "ibrahim.toure@aaes.org", telephone: "+224 622 345 678", profession: "Ingénieur des mines", ville: "Siguiri", dateInscription: new Date().toISOString() },
+                { id: "m_demo3", nom: "Aminata Diallo", email: "aminata.d@aaes.org", telephone: "+224 633 456 789", profession: "Enseignante chercheuse", ville: "Kankan", dateInscription: new Date().toISOString() }
+            ];
+            saveToStorage();
+        }
+        renderMemberList();
+        updateStatCount();
+    }
+
+    function saveToStorage() {
+        localStorage.setItem("siguiri_promo2012_membres_v3", JSON.stringify(membres));
+        updateStatCount();
+    }
+
+    function updateStatCount() {
+        const count = membres.length;
+        document.getElementById("membersCount").innerText = count + " membre" + (count > 1 ? "s" : "");
+        const s = document.getElementById("statMembres");
+        if (s) s.innerText = count;
+    }
+
+    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+
+    function addMember(data) {
+        const m = { id: generateId(), ...data, dateInscription: new Date().toISOString() };
+        membres.push(m);
+        saveToStorage();
+        renderMemberList();
+        return m;
+    }
+
+    function esc(str) { if (!str) return ""; return str.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+    function getInitials(name) {
+        return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    // ---------- SEARCH ----------
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => renderMemberList(searchInput.value.trim().toLowerCase()));
+
+    // ---------- RENDER MEMBER LIST ----------
+    function renderMemberList(filter = '') {
+        const container = document.getElementById("memberListContainer");
+        const filtered = filter
+            ? membres.filter(m => m.nom.toLowerCase().includes(filter) || m.ville.toLowerCase().includes(filter) || m.profession.toLowerCase().includes(filter))
+            : membres;
+
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-${filter ? 'search' : 'user-plus'}"></i><br>${filter ? 'Aucun résultat' : 'Aucun membre. Rejoignez-nous !'}</div>`;
+            return;
+        }
+
+        container.innerHTML = filtered.map(m => `
+            <div class="member-item animate-in" onclick="showCardModal(membres.find(x=>x.id==='${m.id}'))">
+                <div class="member-avatar">${getInitials(m.nom)}</div>
+                <div class="member-info">
+                    <h4>${esc(m.nom)}</h4>
+                    <p><i class="fas fa-briefcase"></i> ${esc(m.profession)} · <i class="fas fa-map-marker-alt"></i> ${esc(m.ville)}</p>
+                </div>
+                <i class="fas fa-chevron-right arrow-icon"></i>
+            </div>
+        `).join('');
+    }
+
+    // ---------- PREMIUM CARD HTML ----------
+    function generatePremiumCardHTML(member) {
+        const uid = member.id.slice(-8).toUpperCase();
+        const dateInsc = new Date(member.dateInscription).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        return `
+            <div class="premium-card" id="premiumCardElement">
+                <div class="card-accent"></div>
+                <div class="card-header-premium">
+                    <div class="school-name"><i class="fas fa-university"></i> AAES · SIGUIRI</div>
+                    <div class="promo-stamp"><i class="fas fa-star-of-life"></i> PROMO 2012</div>
+                </div>
+                <div class="member-name-premium">${esc(member.nom)}</div>
+                <div class="details-grid">
+                    <div class="detail-item"><i class="fas fa-envelope"></i> <span>${esc(member.email)}</span></div>
+                    <div class="detail-item"><i class="fas fa-phone-alt"></i> <span>${esc(member.telephone)}</span></div>
+                    <div class="detail-item"><i class="fas fa-briefcase"></i> <span>${esc(member.profession)}</span></div>
+                    <div class="detail-item"><i class="fas fa-city"></i> <span>${esc(member.ville)}</span></div>
+                    <div class="detail-item"><i class="fas fa-calendar-alt"></i> <span>Adhésion : ${dateInsc}</span></div>
+                    <div class="detail-item"><i class="fas fa-qrcode"></i> <span class="qr-sim-code">UID ${uid}</span></div>
+                </div>
+                <div class="card-footer-premium">
+                    <span><i class="fas fa-check-circle" style="color:var(--gold-600);"></i> Membre actif</span>
+                    <span class="card-status-badge">Carte virtuelle officielle</span>
+                </div>
+                <div class="card-accent" style="height:5px;"></div>
+            </div>
+        `;
+    }
+
+    // ---------- MODAL ----------
+    let currentMember = null;
+    const overlay = document.getElementById('modalOverlay');
+    const sheet = document.getElementById('modalSheet');
+    const cardArea = document.getElementById('dynamicCardArea');
+    const closeSheetBtn = document.getElementById('closeSheetBtn');
+    const downloadBtn = document.getElementById('downloadCardBtn');
+
+    function showCardModal(member) {
+        if (!member) return;
+        currentMember = member;
+        cardArea.innerHTML = generatePremiumCardHTML(member);
+        overlay.classList.add('open');
+        setTimeout(() => sheet.classList.add('open'), 10);
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        sheet.classList.remove('open');
+        setTimeout(() => {
+            overlay.classList.remove('open');
+            cardArea.innerHTML = '';
+            currentMember = null;
+            document.body.style.overflow = '';
+        }, 350);
+    }
+
+    closeSheetBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // Swipe-down to close on mobile
+    let touchStartY = 0;
+    sheet.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    sheet.addEventListener('touchmove', e => {
+        const dy = e.touches[0].clientY - touchStartY;
+        if (dy > 80 && sheet.scrollTop <= 0) closeModal();
+    }, { passive: true });
+
+    // ---------- DOWNLOAD CARD ----------
+    async function downloadCard() {
+        if (!currentMember) return;
+        const el = document.getElementById('premiumCardElement');
+        if (!el) return;
+        try {
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
+            const canvas = await html2canvas(el, { scale: 2.5, backgroundColor: '#fffbf0', logging: false, useCORS: true });
+            const link = document.createElement('a');
+            link.download = `carte_AAES_${currentMember.nom.replace(/\s/g, '_')}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            showToast('Carte téléchargée !');
+        } catch (err) {
+            showToast('Erreur : ' + err.message);
+        } finally {
+            downloadBtn.innerHTML = '<i class="fas fa-camera"></i> Télécharger la carte (PNG)';
+        }
+    }
+
+    downloadBtn.addEventListener('click', downloadCard);
+
+    // ---------- FORM ----------
+    document.getElementById('memberForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const nom = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const telephone = document.getElementById('phone').value.trim();
+        const profession = document.getElementById('profession').value.trim();
+        const ville = document.getElementById('city').value.trim();
+
+        if (!nom || !email || !telephone || !profession || !ville) {
+            showToast('Tous les champs sont requis');
+            return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+            showToast('Email invalide');
+            return;
+        }
+        if (membres.some(m => m.email.toLowerCase() === email.toLowerCase())) {
+            showToast('Cet email est déjà inscrit !');
+            return;
+        }
+
+        const newMember = addMember({ nom, email, telephone, profession, ville });
+        e.target.reset();
+        showToast('Inscription réussie !');
+        showCardModal(newMember);
+    });
+
+    // ---------- INIT ----------
+    loadFromStorage();
+
+    // Activate both tabs visible on desktop
+    if (window.innerWidth >= 1024) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('active'));
+    }
+</script>
+</body>
+</html>
