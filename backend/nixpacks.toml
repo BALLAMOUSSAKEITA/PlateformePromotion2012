@@ -1,0 +1,7 @@
+[phases.setup]
+nixPkgs = ["python312", "gcc", "libffi"]
+
+[phases.install]
+cmds = [
+  "pip install --no-cache-dir -r requirements.txt"
+]
