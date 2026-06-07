@@ -392,6 +392,12 @@
 
         .btn-primary:active { transform: scale(0.98); }
 
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
         .form-hint {
             font-size: 0.7rem;
             margin-top: 12px;
@@ -611,81 +617,140 @@
 
         /* --- PREMIUM CARD --- */
         .premium-card {
-            background: linear-gradient(145deg, #ffffff 0%, var(--gold-50) 100%);
+            background: linear-gradient(145deg, #0f2e1a 0%, #1a4a28 40%, #0f2e1a 100%);
             border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(210,180,110,0.35);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,164,69,0.3);
+            position: relative;
+        }
+
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a445' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
         }
 
         .card-accent {
-            height: 8px;
-            background: linear-gradient(90deg, var(--gold-500), var(--gold-400), var(--gold-500));
+            height: 5px;
+            background: linear-gradient(90deg, var(--gold-500), var(--gold-400), var(--gold-600), var(--gold-400), var(--gold-500));
+            position: relative;
+            z-index: 1;
         }
 
         .card-header-premium {
-            padding: 1rem 1.25rem 0.6rem;
+            padding: 1rem 1.25rem 0.75rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1.5px solid var(--gold-200);
+            border-bottom: 1px solid rgba(201,164,69,0.25);
             flex-wrap: wrap;
             gap: 8px;
+            position: relative;
+            z-index: 1;
         }
 
         .school-name {
             font-weight: 700;
             font-size: 0.8rem;
-            color: #8b6942;
-            background: var(--gold-100);
-            padding: 4px 10px;
+            color: var(--gold-400);
+            background: rgba(201,164,69,0.12);
+            padding: 5px 12px;
             border-radius: var(--radius-full);
+            border: 1px solid rgba(201,164,69,0.2);
+            letter-spacing: 0.5px;
         }
 
         .promo-stamp {
-            background: #cb842e;
-            color: white;
-            padding: 4px 12px;
+            background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+            color: #0f2e1a;
+            padding: 5px 14px;
             border-radius: var(--radius-full);
             font-size: 0.65rem;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .card-member-identity {
+            padding: 1rem 1.25rem 0.5rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f2e1a;
+            font-weight: 800;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 2px solid rgba(201,164,69,0.4);
+        }
+
+        .card-name-block {
+            flex: 1;
+            min-width: 0;
         }
 
         .member-name-premium {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 800;
-            padding: 0.75rem 1.25rem 0.2rem;
-            color: var(--green-800);
+            color: #fff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             word-break: break-word;
+            line-height: 1.3;
+        }
+
+        .member-id-premium {
+            font-family: 'Courier New', monospace;
+            font-size: 0.72rem;
+            color: var(--gold-400);
+            font-weight: 600;
+            margin-top: 4px;
+            letter-spacing: 1.5px;
         }
 
         .details-grid {
             padding: 0.75rem 1rem;
             display: grid;
             grid-template-columns: 1fr;
-            gap: 0.6rem;
-            background: var(--gold-50);
-            margin: 0.6rem 0.8rem;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.06);
+            margin: 0.5rem 0.8rem;
             border-radius: var(--radius-md);
+            border: 1px solid rgba(201,164,69,0.12);
+            position: relative;
+            z-index: 1;
         }
 
         .detail-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 0.78rem;
-            color: #3f5a38;
+            color: rgba(255,255,255,0.85);
             font-weight: 500;
             overflow: hidden;
         }
 
         .detail-item i {
-            width: 20px;
-            color: var(--gold-600);
-            font-size: 0.8rem;
+            width: 18px;
+            color: var(--gold-400);
+            font-size: 0.75rem;
             flex-shrink: 0;
+            text-align: center;
         }
 
         .detail-item span {
@@ -694,33 +759,43 @@
             white-space: nowrap;
         }
 
+        .detail-item .detail-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.68rem;
+            min-width: 55px;
+            flex-shrink: 0;
+        }
+
         .card-footer-premium {
-            padding: 0.6rem 1.25rem 1rem;
+            padding: 0.65rem 1.25rem 0.85rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px dashed var(--gold-200);
-            margin-top: 0.2rem;
+            border-top: 1px solid rgba(201,164,69,0.2);
+            margin-top: 0.3rem;
             flex-wrap: wrap;
             gap: 6px;
             font-size: 0.72rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .qr-sim-code {
-            background: var(--green-900);
-            color: var(--gold-400);
-            padding: 4px 10px;
-            border-radius: var(--radius-full);
-            font-family: 'Courier New', monospace;
-            font-size: 0.65rem;
+        .card-status-active {
+            color: #5ae07a;
             font-weight: 600;
+            font-size: 0.7rem;
         }
 
         .card-status-badge {
-            font-size: 0.68rem;
-            background: var(--gold-200);
-            padding: 3px 10px;
+            font-size: 0.62rem;
+            background: rgba(201,164,69,0.15);
+            color: var(--gold-400);
+            padding: 4px 12px;
             border-radius: var(--radius-full);
+            border: 1px solid rgba(201,164,69,0.2);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .download-btn-modal {
@@ -813,7 +888,7 @@
             .stat-number { font-size: 1.75rem; }
             .platform-section { padding: 2rem; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
             .details-grid { grid-template-columns: 1fr 1fr; }
-            .member-name-premium { font-size: 1.5rem; }
+            .member-name-premium { font-size: 1.3rem; }
 
             .modal-sheet {
                 max-width: 520px;
@@ -993,25 +1068,35 @@
             <div class="form-card" id="inscription">
                 <h3><i class="fas fa-edit"></i> Nouvelle adhésion</h3>
                 <form id="memberForm">
-                    <div class="form-group">
-                        <label><i class="fas fa-user"></i> Nom complet</label>
-                        <input type="text" id="fullName" placeholder="Fatoumata Kourouma" required autocomplete="name">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="email" placeholder="contact@ancien2012.org" required autocomplete="email">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Nom</label>
+                            <input type="text" id="lastName" placeholder="Kourouma" required autocomplete="family-name">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Prénom</label>
+                            <input type="text" id="firstName" placeholder="Fatoumata" required autocomplete="given-name">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-phone"></i> Téléphone</label>
                         <input type="tel" id="phone" placeholder="+224 601 23 45 67" required autocomplete="tel">
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-briefcase"></i> Profession</label>
+                        <label><i class="fas fa-school"></i> École d'origine</label>
+                        <input type="text" id="school" placeholder="Lycée de Siguiri, Collège..." required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-briefcase"></i> Profession actuelle</label>
                         <input type="text" id="profession" placeholder="Ingénieur, Médecin..." required>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-map-marker-alt"></i> Ville</label>
+                        <label><i class="fas fa-map-marker-alt"></i> Ville actuelle</label>
                         <input type="text" id="city" placeholder="Siguiri, Conakry, Paris..." required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Mot de passe</label>
+                        <input type="password" id="password" placeholder="Minimum 6 caractères" required minlength="6" autocomplete="new-password">
                     </div>
                     <button type="submit" class="btn-primary"><i class="fas fa-id-card"></i> S'inscrire & obtenir ma carte</button>
                 </form>
@@ -1100,15 +1185,15 @@
     let membres = [];
 
     function loadFromStorage() {
-        const stored = localStorage.getItem("siguiri_promo2012_membres_v3");
+        const stored = localStorage.getItem("siguiri_promo2012_membres_v4");
         if (stored) {
             try { membres = JSON.parse(stored); } catch { membres = []; }
         }
         if (!membres || membres.length === 0) {
             membres = [
-                { id: "m_demo1", nom: "Mariam Sylla", email: "mariam.sylla@aaes.org", telephone: "+224 611 234 567", profession: "Consultante en développement", ville: "Conakry", dateInscription: new Date().toISOString() },
-                { id: "m_demo2", nom: "Ibrahim Touré", email: "ibrahim.toure@aaes.org", telephone: "+224 622 345 678", profession: "Ingénieur des mines", ville: "Siguiri", dateInscription: new Date().toISOString() },
-                { id: "m_demo3", nom: "Aminata Diallo", email: "aminata.d@aaes.org", telephone: "+224 633 456 789", profession: "Enseignante chercheuse", ville: "Kankan", dateInscription: new Date().toISOString() }
+                { id: "PR-20120001", nom: "Sylla", prenom: "Mariam", telephone: "+224 611 234 567", ecole: "Lycée de Siguiri", profession: "Consultante en développement", ville: "Conakry", dateInscription: new Date().toISOString() },
+                { id: "PR-20120002", nom: "Touré", prenom: "Ibrahim", telephone: "+224 622 345 678", ecole: "Collège Siguiri Centre", profession: "Ingénieur des mines", ville: "Siguiri", dateInscription: new Date().toISOString() },
+                { id: "PR-20120003", nom: "Diallo", prenom: "Aminata", telephone: "+224 633 456 789", ecole: "Lycée de Siguiri", profession: "Enseignante chercheuse", ville: "Kankan", dateInscription: new Date().toISOString() }
             ];
             saveToStorage();
         }
@@ -1117,7 +1202,7 @@
     }
 
     function saveToStorage() {
-        localStorage.setItem("siguiri_promo2012_membres_v3", JSON.stringify(membres));
+        localStorage.setItem("siguiri_promo2012_membres_v4", JSON.stringify(membres));
         updateStatCount();
     }
 
@@ -1128,7 +1213,10 @@
         if (s) s.innerText = count;
     }
 
-    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+    function generateId() {
+        const num = String(membres.length + 1).padStart(4, '0');
+        return `PR-2012${num}`;
+    }
 
     function addMember(data) {
         const m = { id: generateId(), ...data, dateInscription: new Date().toISOString() };
@@ -1140,8 +1228,14 @@
 
     function esc(str) { if (!str) return ""; return str.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
-    function getInitials(name) {
-        return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    function getInitials(member) {
+        const first = member.prenom ? member.prenom[0] : '';
+        const last = member.nom ? member.nom[0] : '';
+        return (first + last).toUpperCase();
+    }
+
+    function getFullName(member) {
+        return `${member.prenom || ''} ${member.nom || ''}`.trim();
     }
 
     // ---------- SEARCH ----------
@@ -1152,7 +1246,10 @@
     function renderMemberList(filter = '') {
         const container = document.getElementById("memberListContainer");
         const filtered = filter
-            ? membres.filter(m => m.nom.toLowerCase().includes(filter) || m.ville.toLowerCase().includes(filter) || m.profession.toLowerCase().includes(filter))
+            ? membres.filter(m => {
+                const full = getFullName(m).toLowerCase();
+                return full.includes(filter) || m.ville.toLowerCase().includes(filter) || m.profession.toLowerCase().includes(filter) || m.id.toLowerCase().includes(filter);
+            })
             : membres;
 
         if (filtered.length === 0) {
@@ -1162,9 +1259,9 @@
 
         container.innerHTML = filtered.map(m => `
             <div class="member-item animate-in" onclick="showCardModal(membres.find(x=>x.id==='${m.id}'))">
-                <div class="member-avatar">${getInitials(m.nom)}</div>
+                <div class="member-avatar">${getInitials(m)}</div>
                 <div class="member-info">
-                    <h4>${esc(m.nom)}</h4>
+                    <h4>${esc(getFullName(m))}</h4>
                     <p><i class="fas fa-briefcase"></i> ${esc(m.profession)} · <i class="fas fa-map-marker-alt"></i> ${esc(m.ville)}</p>
                 </div>
                 <i class="fas fa-chevron-right arrow-icon"></i>
@@ -1174,29 +1271,34 @@
 
     // ---------- PREMIUM CARD HTML ----------
     function generatePremiumCardHTML(member) {
-        const uid = member.id.slice(-8).toUpperCase();
         const dateInsc = new Date(member.dateInscription).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        const fullName = getFullName(member);
         return `
             <div class="premium-card" id="premiumCardElement">
                 <div class="card-accent"></div>
                 <div class="card-header-premium">
-                    <div class="school-name"><i class="fas fa-university"></i> AAES · SIGUIRI</div>
-                    <div class="promo-stamp"><i class="fas fa-star-of-life"></i> PROMO 2012</div>
+                    <div class="school-name"><i class="fas fa-graduation-cap"></i> AAES · SIGUIRI</div>
+                    <div class="promo-stamp">PROMO 2012</div>
                 </div>
-                <div class="member-name-premium">${esc(member.nom)}</div>
+                <div class="card-member-identity">
+                    <div class="card-avatar">${getInitials(member)}</div>
+                    <div class="card-name-block">
+                        <div class="member-name-premium">${esc(fullName)}</div>
+                        <div class="member-id-premium">${esc(member.id)}</div>
+                    </div>
+                </div>
                 <div class="details-grid">
-                    <div class="detail-item"><i class="fas fa-envelope"></i> <span>${esc(member.email)}</span></div>
                     <div class="detail-item"><i class="fas fa-phone-alt"></i> <span>${esc(member.telephone)}</span></div>
+                    <div class="detail-item"><i class="fas fa-school"></i> <span>${esc(member.ecole)}</span></div>
                     <div class="detail-item"><i class="fas fa-briefcase"></i> <span>${esc(member.profession)}</span></div>
-                    <div class="detail-item"><i class="fas fa-city"></i> <span>${esc(member.ville)}</span></div>
-                    <div class="detail-item"><i class="fas fa-calendar-alt"></i> <span>Adhésion : ${dateInsc}</span></div>
-                    <div class="detail-item"><i class="fas fa-qrcode"></i> <span class="qr-sim-code">UID ${uid}</span></div>
+                    <div class="detail-item"><i class="fas fa-map-marker-alt"></i> <span>${esc(member.ville)}</span></div>
+                    <div class="detail-item"><i class="fas fa-calendar-alt"></i> <span>Membre depuis le ${dateInsc}</span></div>
                 </div>
                 <div class="card-footer-premium">
-                    <span><i class="fas fa-check-circle" style="color:var(--gold-600);"></i> Membre actif</span>
+                    <span class="card-status-active"><i class="fas fa-check-circle"></i> Membre actif</span>
                     <span class="card-status-badge">Carte virtuelle officielle</span>
                 </div>
-                <div class="card-accent" style="height:5px;"></div>
+                <div class="card-accent" style="height:4px;"></div>
             </div>
         `;
     }
@@ -1246,9 +1348,9 @@
         if (!el) return;
         try {
             downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération...';
-            const canvas = await html2canvas(el, { scale: 2.5, backgroundColor: '#fffbf0', logging: false, useCORS: true });
+            const canvas = await html2canvas(el, { scale: 2.5, backgroundColor: '#0f2e1a', logging: false, useCORS: true });
             const link = document.createElement('a');
-            link.download = `carte_AAES_${currentMember.nom.replace(/\s/g, '_')}.png`;
+            link.download = `carte_AAES_${getFullName(currentMember).replace(/\s/g, '_')}.png`;
             link.href = canvas.toDataURL();
             link.click();
             showToast('Carte téléchargée !');
@@ -1264,26 +1366,28 @@
     // ---------- FORM ----------
     document.getElementById('memberForm').addEventListener('submit', e => {
         e.preventDefault();
-        const nom = document.getElementById('fullName').value.trim();
-        const email = document.getElementById('email').value.trim();
+        const nom = document.getElementById('lastName').value.trim();
+        const prenom = document.getElementById('firstName').value.trim();
         const telephone = document.getElementById('phone').value.trim();
+        const ecole = document.getElementById('school').value.trim();
         const profession = document.getElementById('profession').value.trim();
         const ville = document.getElementById('city').value.trim();
+        const motDePasse = document.getElementById('password').value;
 
-        if (!nom || !email || !telephone || !profession || !ville) {
+        if (!nom || !prenom || !telephone || !ecole || !profession || !ville || !motDePasse) {
             showToast('Tous les champs sont requis');
             return;
         }
-        if (!email.includes('@') || !email.includes('.')) {
-            showToast('Email invalide');
+        if (motDePasse.length < 6) {
+            showToast('Le mot de passe doit contenir au moins 6 caractères');
             return;
         }
-        if (membres.some(m => m.email.toLowerCase() === email.toLowerCase())) {
-            showToast('Cet email est déjà inscrit !');
+        if (membres.some(m => m.nom.toLowerCase() === nom.toLowerCase() && m.prenom.toLowerCase() === prenom.toLowerCase())) {
+            showToast('Ce membre est déjà inscrit !');
             return;
         }
 
-        const newMember = addMember({ nom, email, telephone, profession, ville });
+        const newMember = addMember({ nom, prenom, telephone, ecole, profession, ville });
         e.target.reset();
         showToast('Inscription réussie !');
         showCardModal(newMember);
