@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from config import settings
@@ -6,6 +6,22 @@ from config import settings
 engine = create_engine(settings.DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+
+def migrate_db():
+    """Ajoute les colonnes manquantes sur les bases existantes (SQLite/PostgreSQL)."""
+    new_columns = [
+        ("school", "VARCHAR(150)"),
+        ("profession", "VARCHAR(150)"),
+        ("city", "VARCHAR(150)"),
+    ]
+    with engine.connect() as conn:
+        for col_name, col_type in new_columns:
+            try:
+                conn.execute(text(f"ALTER TABLE members ADD COLUMN {col_name} {col_type}"))
+                conn.commit()
+            except Exception:
+                conn.rollback()
 
 
 def get_db():

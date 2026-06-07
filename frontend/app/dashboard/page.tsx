@@ -154,9 +154,10 @@ export default function DashboardPage() {
               <div className="bg-white rounded-xl sm:rounded-2xl border border-[#f0ebe3] shadow-card overflow-hidden">
                 {[
                   { label: "Numéro", value: currentMember.member_number, mono: true },
-                  { label: "Email", value: currentMember.email },
-                  ...(currentMember.phone ? [{ label: "Téléphone", value: currentMember.phone }] : []),
-                  ...(currentMember.filiere ? [{ label: "Filière", value: currentMember.filiere }] : []),
+                  { label: "Téléphone", value: currentMember.phone },
+                  ...(currentMember.school ? [{ label: "École d'origine", value: currentMember.school }] : []),
+                  ...(currentMember.profession ? [{ label: "Profession", value: currentMember.profession }] : []),
+                  ...(currentMember.city ? [{ label: "Ville", value: currentMember.city }] : []),
                   { label: "Statut", value: currentMember.status === "actif" ? "Actif" : "En attente", status: true },
                 ].map(({ label, value, mono, status }) => (
                   <div key={label} className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-3.5 border-b border-[#f8f6f2] last:border-0">

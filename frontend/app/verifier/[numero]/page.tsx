@@ -97,7 +97,9 @@ export default function VerifierPage() {
                 <div className="space-y-0 border-t border-[#f5f3f0]">
                   {[
                     { label: "Numéro de membre", value: member.member_number, mono: true },
-                    ...(member.filiere ? [{ label: "Filière", value: member.filiere }] : []),
+                    ...(member.school ? [{ label: "École d'origine", value: member.school }] : []),
+                    ...(member.profession ? [{ label: "Profession", value: member.profession }] : []),
+                    ...(member.city ? [{ label: "Ville", value: member.city }] : []),
                   ].map(({ label, value, mono }) => (
                     <div key={label} className="flex items-center justify-between py-3.5 sm:py-4 border-b border-[#f8f6f2]">
                       <span className="text-[12px] sm:text-[13px] text-[#999] flex-shrink-0">{label}</span>

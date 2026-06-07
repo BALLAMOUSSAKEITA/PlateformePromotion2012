@@ -150,7 +150,7 @@ export default function HomePage() {
                       </div>
                       <div>
                         <p className="text-white font-display text-base sm:text-lg">Amadou Barry</p>
-                        <p className="text-[9px] sm:text-[10px] font-mono text-[#d4a843] mt-0.5">AAES-2012-0042</p>
+                        <p className="text-[9px] sm:text-[10px] font-mono text-[#d4a843] mt-0.5">PR-20120042</p>
                       </div>
                     </div>
                   </div>
@@ -223,8 +223,8 @@ export default function HomePage() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {[
-              { n: "01", text: "Renseignez votre nom, prenom et filiere", icon: PenLine },
-              { n: "02", text: "Choisissez un email et un mot de passe", icon: KeyRound },
+              { n: "01", text: "Renseignez nom, prénom, téléphone, école, profession et ville", icon: PenLine },
+              { n: "02", text: "Choisissez votre mot de passe", icon: KeyRound },
               { n: "03", text: "Ajoutez une photo de profil", icon: Camera },
               { n: "04", text: "Telechargez votre carte de membre", icon: Download },
             ].map((step, i) => (

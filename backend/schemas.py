@@ -1,22 +1,25 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 
 class MemberCreate(BaseModel):
-    email: EmailStr
     password: str
     first_name: str
     last_name: str
-    phone: Optional[str] = None
-    filiere: Optional[str] = None
+    phone: str
+    school: str
+    profession: str
+    city: str
 
 
 class MemberUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     phone: Optional[str] = None
-    filiere: Optional[str] = None
+    school: Optional[str] = None
+    profession: Optional[str] = None
+    city: Optional[str] = None
 
 
 class MemberOut(BaseModel):
@@ -25,7 +28,10 @@ class MemberOut(BaseModel):
     email: str
     first_name: str
     last_name: str
-    phone: Optional[str] = None
+    phone: str
+    school: Optional[str] = None
+    profession: Optional[str] = None
+    city: Optional[str] = None
     filiere: Optional[str] = None
     photo_url: Optional[str] = None
     status: str
@@ -36,7 +42,7 @@ class MemberOut(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    phone: str
     password: str
 
 
@@ -50,6 +56,9 @@ class VerifyMemberOut(BaseModel):
     member_number: str
     first_name: str
     last_name: str
+    school: Optional[str] = None
+    profession: Optional[str] = None
+    city: Optional[str] = None
     filiere: Optional[str] = None
     status: str
     photo_url: Optional[str] = None

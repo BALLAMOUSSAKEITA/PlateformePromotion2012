@@ -13,7 +13,7 @@ export default function ConnexionPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ phone: "", password: "" });
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,8 +69,8 @@ export default function ConnexionPage() {
             )}
 
             <div className="field-group">
-              <input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder=" " required autoComplete="email" />
-              <label>Adresse email</label>
+              <input type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder=" " required autoComplete="tel" />
+              <label>Numéro de téléphone</label>
             </div>
 
             <div className="field-group relative">

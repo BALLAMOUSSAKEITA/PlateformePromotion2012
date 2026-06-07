@@ -20,7 +20,10 @@ class Member(Base):
 
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
-    phone = Column(String(20), nullable=True)
+    phone = Column(String(20), unique=True, index=True, nullable=False)
+    school = Column(String(150), nullable=True)
+    profession = Column(String(150), nullable=True)
+    city = Column(String(150), nullable=True)
     filiere = Column(String(150), nullable=True)
     photo_url = Column(String(500), nullable=True)
 

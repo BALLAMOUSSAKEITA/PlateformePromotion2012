@@ -7,12 +7,12 @@ from config import settings
 CARD_W, CARD_H = 860, 520
 CARD_DIR = "cards"
 
-# Palette
-COLOR_BG = (15, 40, 80)          # bleu marine profond
-COLOR_ACCENT = (196, 160, 80)     # or
-COLOR_LIGHT = (230, 230, 230)     # gris clair
+# Palette verte / or (AAES Siguiri)
+COLOR_BG = (15, 46, 26)
+COLOR_ACCENT = (212, 168, 67)
+COLOR_LIGHT = (220, 230, 220)
 COLOR_WHITE = (255, 255, 255)
-COLOR_STRIPE = (25, 60, 110)      # bleu légèrement plus clair
+COLOR_STRIPE = (26, 74, 40)
 
 
 def _get_font(size: int, bold: bool = False):
@@ -59,7 +59,7 @@ def generate_member_card(member, base_url: str) -> str:
         draw.line([(i, 0), (i - CARD_H, CARD_H)], fill=COLOR_STRIPE, width=20)
 
     # Réappliquer le fond par-dessus pour nettoyer (effet glassmorphisme simple)
-    overlay = Image.new("RGBA", (CARD_W, CARD_H), (15, 40, 80, 200))
+    overlay = Image.new("RGBA", (CARD_W, CARD_H), (15, 46, 26, 210))
     img = img.convert("RGBA")
     img = Image.alpha_composite(img, overlay).convert("RGB")
     draw = ImageDraw.Draw(img)
@@ -81,8 +81,8 @@ def generate_member_card(member, base_url: str) -> str:
     font_small = _get_font(11)
 
     # Titre association
-    draw.text((30, 22), "ANCIENS ÉLÈVES DE SIGUIRI", font=font_title, fill=COLOR_ACCENT)
-    draw.text((30, 42), "Promotion 2012  ·  République de Guinée", font=font_subtitle, fill=COLOR_LIGHT)
+    draw.text((30, 22), "AAES · ANCIENS ÉLÈVES DE SIGUIRI", font=font_title, fill=COLOR_ACCENT)
+    draw.text((30, 42), "Promotion 2012  ·  Carte de membre officielle", font=font_subtitle, fill=COLOR_LIGHT)
 
     # Ligne de séparation dorée
     draw.rectangle([(30, 65), (CARD_W - 30, 67)], fill=COLOR_ACCENT)
@@ -139,14 +139,24 @@ def generate_member_card(member, base_url: str) -> str:
     full_name = f"{member.first_name.upper()} {member.last_name.upper()}"
     draw.text((info_x, info_y), full_name, font=font_name, fill=COLOR_WHITE)
 
-    if member.filiere:
-        draw.text((info_x, info_y + 40), f"Filière : {member.filiere}", font=font_info, fill=COLOR_LIGHT)
+    line_y = info_y + 42
+    if member.school:
+        draw.text((info_x, line_y), f"École : {member.school}", font=font_info, fill=COLOR_LIGHT)
+        line_y += 22
+    if member.profession:
+        draw.text((info_x, line_y), f"Profession : {member.profession}", font=font_info, fill=COLOR_LIGHT)
+        line_y += 22
+    if member.city:
+        draw.text((info_x, line_y), f"Ville : {member.city}", font=font_info, fill=COLOR_LIGHT)
+        line_y += 22
+    elif member.filiere:
+        draw.text((info_x, line_y), f"Filière : {member.filiere}", font=font_info, fill=COLOR_LIGHT)
+        line_y += 22
 
-    draw.text((info_x, info_y + 65), f"Statut : {member.status.value.capitalize()}", font=font_info, fill=COLOR_ACCENT)
+    draw.text((info_x, line_y), f"Statut : {member.status.value.capitalize()}", font=font_info, fill=COLOR_ACCENT)
 
-    # Numéro de membre mis en valeur
-    draw.rectangle([(info_x, info_y + 98), (info_x + 260, info_y + 128)], fill=COLOR_ACCENT)
-    draw.text((info_x + 10, info_y + 103), member.member_number, font=font_number, fill=COLOR_BG)
+    draw.rectangle([(info_x, line_y + 33), (info_x + 260, line_y + 63)], fill=COLOR_ACCENT)
+    draw.text((info_x + 10, line_y + 38), member.member_number, font=font_number, fill=COLOR_BG)
 
     # === QR CODE ===
     verify_url = f"{base_url}/membres/{member.member_number}/verifier"

@@ -2,12 +2,13 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from database import Base, engine
+from database import Base, engine, migrate_db
 from routes.auth_routes import router as auth_router
 from routes.member_routes import router as member_router
 from config import settings
 
 Base.metadata.create_all(bind=engine)
+migrate_db()
 
 app = FastAPI(
     title="Anciens Élèves de Siguiri – Promotion 2012 API",

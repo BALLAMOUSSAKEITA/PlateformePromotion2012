@@ -35,6 +35,23 @@ def get_member_by_email(db: Session, email: str):
     return db.query(models.Member).filter(models.Member.email == email).first()
 
 
+def get_member_by_phone(db: Session, phone: str):
+    normalized = normalize_phone(phone)
+    members = db.query(models.Member).all()
+    for member in members:
+        if normalize_phone(member.phone or "") == normalized:
+            return member
+    return None
+
+
+def normalize_phone(phone: str) -> str:
+    return "".join(ch for ch in phone if ch.isdigit())
+
+
+def internal_email_from_phone(phone: str) -> str:
+    return f"{normalize_phone(phone)}@membre.aaes.siguiri"
+
+
 def generate_member_number(db: Session) -> str:
     count = db.query(models.Member).count()
-    return f"FILI-2012-{str(count + 1).zfill(4)}"
+    return f"PR-2012{str(count + 1).zfill(4)}"

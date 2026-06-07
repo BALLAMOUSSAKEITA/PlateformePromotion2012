@@ -7,16 +7,6 @@ import API from "@/lib/api";
 import { AuthResponse } from "@/types";
 import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 
-const FILIERES = [
-  "Sciences naturelles",
-  "Sciences exactes",
-  "Lettres modernes",
-  "Sciences sociales",
-  "Économie",
-  "Informatique",
-  "Autre",
-];
-
 export default function InscriptionPage() {
   const { login } = useAuth();
   const router = useRouter();
@@ -28,9 +18,10 @@ export default function InscriptionPage() {
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
-    email: "",
     phone: "",
-    filiere: "",
+    school: "",
+    profession: "",
+    city: "",
     password: "",
     confirm_password: "",
   });
@@ -42,17 +33,29 @@ export default function InscriptionPage() {
       setError("Le prénom et le nom sont requis.");
       return false;
     }
+    if (!form.phone.trim()) {
+      setError("Le numéro de téléphone est requis.");
+      return false;
+    }
+    if (!form.school.trim()) {
+      setError("L'école d'origine est requise.");
+      return false;
+    }
+    if (!form.profession.trim()) {
+      setError("La profession actuelle est requise.");
+      return false;
+    }
+    if (!form.city.trim()) {
+      setError("La ville actuelle est requise.");
+      return false;
+    }
     setError("");
     return true;
   };
 
   const validateStep2 = () => {
-    if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
-      setError("Adresse email invalide.");
-      return false;
-    }
-    if (form.password.length < 8) {
-      setError("Minimum 8 caractères pour le mot de passe.");
+    if (form.password.length < 6) {
+      setError("Minimum 6 caractères pour le mot de passe.");
       return false;
     }
     if (form.password !== form.confirm_password) {
@@ -68,11 +71,12 @@ export default function InscriptionPage() {
     setLoading(true);
     try {
       const res = await API.post<AuthResponse>("/auth/inscription", {
-        first_name: form.first_name,
-        last_name: form.last_name,
-        email: form.email,
-        phone: form.phone || undefined,
-        filiere: form.filiere || undefined,
+        first_name: form.first_name.trim(),
+        last_name: form.last_name.trim(),
+        phone: form.phone.trim(),
+        school: form.school.trim(),
+        profession: form.profession.trim(),
+        city: form.city.trim(),
         password: form.password,
       });
       login(res.data.access_token, res.data.member);
@@ -88,7 +92,6 @@ export default function InscriptionPage() {
   return (
     <div className="min-h-[100svh] flex flex-col lg:flex-row">
 
-      {/* Panneau gauche - visuel (desktop only) */}
       <div className="hidden lg:flex w-[45%] bg-gradient-to-br from-[#0f5132] via-[#145a38] to-[#0a3d26] flex-col justify-between p-10 relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 11px)",
@@ -110,7 +113,7 @@ export default function InscriptionPage() {
             Rejoignez votre<br />promotion.
           </h2>
           <p className="text-white/40 text-[15px] leading-relaxed max-w-sm">
-            Créez votre compte en 2 minutes et obtenez immédiatement votre carte de membre officielle.
+            Renseignez vos informations et obtenez immédiatement votre carte de membre officielle.
           </p>
         </div>
 
@@ -123,14 +126,13 @@ export default function InscriptionPage() {
                 {step > s ? <CheckCircle2 className="w-4 h-4" /> : s}
               </div>
               <span className={`text-[12px] ${step === s ? "text-white font-medium" : "text-white/30"}`}>
-                {s === 1 ? "Identité" : "Compte"}
+                {s === 1 ? "Identité" : "Sécurité"}
               </span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Formulaire */}
       <div className="flex-1 flex items-start sm:items-center justify-center px-4 sm:px-6 py-8 sm:py-16 bg-[#fefcf9] min-h-[100svh] lg:min-h-0">
         <div className="w-full max-w-[420px]">
 
@@ -141,7 +143,6 @@ export default function InscriptionPage() {
             </Link>
           </div>
 
-          {/* Mobile step indicator */}
           <div className="lg:hidden flex items-center gap-2 mb-5">
             <div className={`h-1.5 rounded-full flex-1 transition-colors ${step >= 1 ? "bg-[#0f5132]" : "bg-[#e8e3db]"}`} />
             <div className={`h-1.5 rounded-full flex-1 transition-colors ${step >= 2 ? "bg-[#0f5132]" : "bg-[#e8e3db]"}`} />
@@ -151,7 +152,7 @@ export default function InscriptionPage() {
             Étape {step} sur 2
           </span>
           <h1 className="font-display text-[1.5rem] sm:text-[1.75rem] text-[#1a1a2e] mt-2 mb-6 sm:mb-8">
-            {step === 1 ? "Qui êtes-vous ?" : "Créez votre compte"}
+            {step === 1 ? "Vos renseignements" : "Choisissez un mot de passe"}
           </h1>
 
           {error && (
@@ -167,14 +168,10 @@ export default function InscriptionPage() {
                 <FloatField label="Prénom" value={form.first_name} onChange={(v) => set("first_name", v)} />
                 <FloatField label="Nom" value={form.last_name} onChange={(v) => set("last_name", v)} />
               </div>
-              <FloatField label="Téléphone (optionnel)" value={form.phone} onChange={(v) => set("phone", v)} type="tel" />
-              <div className={`field-group ${form.filiere ? "filled" : ""}`}>
-                <select value={form.filiere} onChange={(e) => set("filiere", e.target.value)}>
-                  <option value="" disabled> </option>
-                  {FILIERES.map((f) => <option key={f} value={f}>{f}</option>)}
-                </select>
-                <label>Filière (optionnel)</label>
-              </div>
+              <FloatField label="Numéro de téléphone" value={form.phone} onChange={(v) => set("phone", v)} type="tel" />
+              <FloatField label="École d'origine" value={form.school} onChange={(v) => set("school", v)} />
+              <FloatField label="Profession actuelle" value={form.profession} onChange={(v) => set("profession", v)} />
+              <FloatField label="Ville actuelle" value={form.city} onChange={(v) => set("city", v)} />
 
               <button
                 onClick={() => validateStep1() && setStep(2)}
@@ -188,7 +185,6 @@ export default function InscriptionPage() {
 
           {step === 2 && (
             <div className="space-y-3 sm:space-y-4">
-              <FloatField label="Adresse email" value={form.email} onChange={(v) => set("email", v)} type="email" />
               <div className="field-group relative">
                 <input
                   type={showPass ? "text" : "password"}
@@ -197,7 +193,7 @@ export default function InscriptionPage() {
                   placeholder=" "
                   className="pr-12"
                 />
-                <label>Mot de passe (min. 8 car.)</label>
+                <label>Mot de passe (min. 6 car.)</label>
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
