@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Users, CreditCard, ShieldCheck, Sparkles, X, PenLine, KeyRound, Camera, Download } from "lucide-react";
+import { X, PenLine, KeyRound, Camera, CreditCard } from "lucide-react";
 
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -74,7 +74,7 @@ export default function HomePage() {
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-16 lg:py-0 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-            
+
             <div className="text-center lg:text-left">
               <h1 className="font-display text-[2rem] sm:text-[2.5rem] lg:text-[clamp(2.5rem,5.5vw,4rem)] text-[#1a1a2e] leading-[1.12] mb-4 sm:mb-6">
                 La promotion 2012<br />
@@ -82,7 +82,7 @@ export default function HomePage() {
               </h1>
 
               <p className="text-[0.9375rem] sm:text-[1.0625rem] text-[#5a5a6e] leading-relaxed max-w-lg mx-auto lg:mx-0 mb-8 sm:mb-10">
-                Rejoignez l&apos;Association des Anciens Eleves de Siguiri. 
+                Rejoignez l&apos;Association des Anciens Eleves de Siguiri.
                 Obtenez votre carte de membre officielle et reconnectez-vous avec votre communaute.
               </p>
 
@@ -103,27 +103,14 @@ export default function HomePage() {
                   </svg>
                 </Link>
               </div>
-
-              <div className="mt-10 sm:mt-14 flex items-center justify-center lg:justify-start gap-4 sm:gap-6">
-                <div className="flex -space-x-2">
-                  {[0,1,2,3].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-[#0f5132] to-[#1a7a4c] flex items-center justify-center">
-                      <span className="text-[9px] font-bold text-white">{["AS","MK","FD","IB"][i]}</span>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-[13px] text-[#888]">
-                  Deja <span className="font-semibold text-[#1a1a2e]">des dizaines</span> de membres
-                </p>
-              </div>
             </div>
 
-            {/* Card preview */}
+            {/* Apercu carte */}
             <div className="relative mt-4 lg:mt-0">
               <div className="relative">
                 <div className="hidden lg:block absolute -top-6 -right-6 w-24 h-24 rounded-2xl bg-[#d4a843]/10 rotate-12" />
                 <div className="hidden lg:block absolute -bottom-4 -left-4 w-16 h-16 rounded-xl bg-[#0f5132]/10 -rotate-6" />
-                
+
                 <div className="relative rounded-2xl overflow-hidden shadow-xl lg:shadow-2xl shadow-[#0f5132]/10 mx-auto max-w-[400px] lg:max-w-none" style={{ aspectRatio: "86/52" }}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[#0f5132] via-[#145a38] to-[#0a3d26]" />
                   <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#d4a843] via-[#f0d078] to-[#d4a843]" />
@@ -139,17 +126,17 @@ export default function HomePage() {
                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/10 flex items-center justify-center">
                         <div className="w-5 h-5 sm:w-6 sm:h-6 rounded border border-[#d4a843]/50 grid grid-cols-3 grid-rows-3 gap-px p-0.5">
                           {[...Array(9)].map((_, i) => (
-                            <div key={i} className={`rounded-sm ${[0,2,4,6,8].includes(i) ? 'bg-[#d4a843]/60' : 'bg-white/20'}`} />
+                            <div key={i} className={`rounded-sm ${[0,2,4,6,8].includes(i) ? "bg-[#d4a843]/60" : "bg-white/20"}`} />
                           ))}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-end gap-3">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/10 flex items-center justify-center">
-                        <span className="text-xs sm:text-sm font-bold text-[#d4a843]/80">AB</span>
+                        <span className="text-xs sm:text-sm font-bold text-[#d4a843]/80">IK</span>
                       </div>
                       <div>
-                        <p className="text-white font-display text-base sm:text-lg">Amadou Barry</p>
+                        <p className="text-white font-display text-base sm:text-lg">Ibrahim Filifing Keita</p>
                         <p className="text-[9px] sm:text-[10px] font-mono text-[#d4a843] mt-0.5">PR-20120042</p>
                       </div>
                     </div>
@@ -161,59 +148,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── AVANTAGES ── */}
-      <section className="py-16 sm:py-24 lg:py-32 bg-white relative">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10">
-          
-          <div className="text-center mb-10 sm:mb-16">
-            <span className="inline-block text-[12px] font-bold tracking-[0.2em] uppercase text-[#d4a843] mb-3">Avantages</span>
-            <h2 className="font-display text-[1.5rem] sm:text-[clamp(1.75rem,3.5vw,2.5rem)] text-[#1a1a2e]">
-              Tout ce que vous obtenez
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            {[
-              {
-                icon: CreditCard,
-                title: "Carte de membre officielle",
-                body: "Un document personnalise avec votre photo, numero unique et QR code de verification. Telechargeable en haute qualite.",
-                color: "from-[#0f5132] to-[#1a7a4c]",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Identite verifiable",
-                body: "N'importe qui peut scanner votre QR code pour confirmer instantanement votre appartenance a la promotion.",
-                color: "from-[#d4a843] to-[#c49a35]",
-              },
-              {
-                icon: Users,
-                title: "Communaute connectee",
-                body: "Retrouvez vos anciens camarades, restez informes des activites de l'association et participez aux evenements.",
-                color: "from-[#c45d3e] to-[#a84d32]",
-              },
-            ].map((item, i) => (
-              <div key={i} className="bg-[#fefcf9] border border-[#f0ebe3] rounded-2xl p-5 sm:p-7 shadow-card-hover group">
-                <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4 sm:mb-5 group-hover:scale-105 transition-transform`}>
-                  <item.icon className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="text-[1rem] sm:text-[1.0625rem] font-bold text-[#1a1a2e] mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-[0.875rem] sm:text-[0.9375rem] text-[#5a5a6e] leading-relaxed">
-                  {item.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── COMMENT CA MARCHE ── */}
       <section className="py-16 sm:py-24 lg:py-32 bg-gradient-to-b from-[#f0f7f2] to-[#fefcf9] relative">
         <div className="absolute inset-0 pattern-kente opacity-50" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-10">
-          
+
           <div className="text-center mb-10 sm:mb-16">
             <span className="inline-block text-[12px] font-bold tracking-[0.2em] uppercase text-[#0f5132] mb-3">Simple et rapide</span>
             <h2 className="font-display text-[1.5rem] sm:text-[clamp(1.75rem,3.5vw,2.5rem)] text-[#1a1a2e]">
@@ -223,10 +162,10 @@ export default function HomePage() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {[
-              { n: "01", text: "Renseignez nom, prénom, téléphone, école, profession et ville", icon: PenLine },
+              { n: "01", text: "Renseignez nom, prenom, telephone, ecole, profession et ville", icon: PenLine },
               { n: "02", text: "Choisissez votre mot de passe", icon: KeyRound },
               { n: "03", text: "Ajoutez une photo de profil", icon: Camera },
-              { n: "04", text: "Telechargez votre carte de membre", icon: Download },
+              { n: "04", text: "Consultez votre carte de membre", icon: CreditCard },
             ].map((step, i) => (
               <div key={i} className="relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-card-hover group">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -254,27 +193,18 @@ export default function HomePage() {
       {/* ── CTA FINAL ── */}
       <section className="py-12 sm:py-20 lg:py-28">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10">
-          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#0f5132] via-[#145a38] to-[#0a3d26] p-6 sm:p-10 lg:p-16">
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#0f5132] via-[#145a38] to-[#0a3d26] p-8 sm:p-12 lg:p-16 text-center">
             <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 rounded-full bg-[#d4a843]/10 blur-3xl" />
             <div className="absolute bottom-0 left-0 w-32 sm:w-48 h-32 sm:h-48 rounded-full bg-white/5 blur-2xl" />
             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#d4a843] to-transparent" />
 
-            <div className="relative flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 text-center lg:text-left">
-              <div>
-                <div className="flex items-center justify-center lg:justify-start gap-2 mb-3 sm:mb-4">
-                  <Sparkles className="w-4 h-4 text-[#d4a843]" />
-                  <span className="text-[12px] font-bold tracking-[0.15em] uppercase text-[#d4a843]">Gratuit a vie</span>
-                </div>
-                <h2 className="font-display text-[1.375rem] sm:text-[clamp(1.5rem,3vw,2.25rem)] text-white leading-tight mb-2 sm:mb-3">
-                  Inscription gratuite,<br className="hidden sm:inline" /> carte immediate.
-                </h2>
-                <p className="text-white/50 text-[14px] sm:text-[15px] max-w-md mx-auto lg:mx-0">
-                  Pas de frais caches. Votre carte de membre est generee en quelques secondes apres l&apos;inscription.
-                </p>
-              </div>
+            <div className="relative">
+              <h2 className="font-display text-[1.5rem] sm:text-[clamp(1.75rem,3vw,2.5rem)] text-white leading-tight mb-6 sm:mb-8">
+                Rejoignez la promotion 2012
+              </h2>
               <Link
                 href="/inscription"
-                className="w-full sm:w-auto flex-shrink-0 inline-flex items-center justify-center gap-3 text-[15px] font-semibold text-[#0f5132] bg-white px-8 py-4 rounded-xl hover:bg-[#f5e6c8] transition-all hover:shadow-xl group btn-touch"
+                className="inline-flex items-center justify-center gap-3 text-[15px] font-semibold text-[#0f5132] bg-white px-8 py-4 rounded-xl hover:bg-[#f5e6c8] transition-all hover:shadow-xl group btn-touch"
               >
                 S&apos;inscrire maintenant
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="transition-transform group-hover:translate-x-1">
