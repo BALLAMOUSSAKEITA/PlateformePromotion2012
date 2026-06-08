@@ -116,67 +116,44 @@ export default function DashboardPage() {
         )}
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-10 lg:py-14">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-8 lg:py-12">
 
-        {/* Welcome banner */}
-        <div className="bg-gradient-to-r from-[#0f5132] to-[#1a7a4c] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 mb-6 sm:mb-10 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 rounded-full bg-[#d4a843]/10 blur-3xl" />
-          <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-[#d4a843]/50 to-transparent" />
-          <div className="relative">
-            <p className="text-[11px] sm:text-[12px] font-medium text-[#d4a843] mb-1">Mon espace membre</p>
-            <h1 className="font-display text-[1.25rem] sm:text-[1.5rem] lg:text-[1.75rem] text-white leading-tight">
-              Bienvenue, {currentMember.first_name}
+        {/* ─ Bienvenue compact ─ */}
+        <div className="flex items-center justify-between mb-5 sm:mb-8">
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-[#d4a843] mb-0.5">Mon espace</p>
+            <h1 className="font-display text-[1.5rem] sm:text-[1.75rem] text-[#1a1a2e] leading-tight">
+              Bonjour, {currentMember.first_name} 👋
             </h1>
-            <p className="text-white/40 text-[13px] sm:text-[14px] mt-1.5 sm:mt-2">Gérez votre profil et votre carte</p>
           </div>
+          <span className="hidden sm:flex items-center gap-2 bg-emerald-50 text-emerald-700 text-[12px] font-semibold px-3 py-1.5 rounded-full border border-emerald-100">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-dot" />
+            Actif
+          </span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 sm:gap-8 lg:gap-10">
 
-          {/* Carte */}
-          <div className="lg:col-span-3">
-            <div className="flex items-center gap-2 mb-3 sm:mb-4">
-              <div className="w-1.5 h-5 rounded-full bg-[#0f5132]" />
-              <h2 className="text-[13px] font-bold tracking-[0.1em] uppercase text-[#1a1a2e]">Ma carte</h2>
+          {/* ─ CARTE (pleine largeur mobile, 3/5 desktop) ─ */}
+          <div className="lg:col-span-3 flex flex-col items-center">
+            <div className="w-full flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-4 rounded-full bg-[#0f5132]" />
+              <span className="text-[12px] font-bold tracking-[0.1em] uppercase text-[#5a5a6e]">Ma carte de membre</span>
             </div>
             <MemberCard member={currentMember} />
           </div>
 
-          {/* Infos latérales */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          {/* ─ PANNEAU ACTIONS (2/5 desktop) ─ */}
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
 
-            {/* Profil */}
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-1.5 h-5 rounded-full bg-[#d4a843]" />
-                <h2 className="text-[13px] font-bold tracking-[0.1em] uppercase text-[#1a1a2e]">Profil</h2>
-              </div>
-              <div className="bg-white rounded-xl sm:rounded-2xl border border-[#f0ebe3] shadow-card overflow-hidden">
-                {[
-                  { label: "Numéro", value: currentMember.member_number, mono: true },
-                  { label: "Téléphone", value: currentMember.phone },
-                  ...(currentMember.school ? [{ label: "École d'origine", value: currentMember.school }] : []),
-                  ...(currentMember.profession ? [{ label: "Profession", value: currentMember.profession }] : []),
-                  ...(currentMember.city ? [{ label: "Ville", value: currentMember.city }] : []),
-                  { label: "Statut", value: currentMember.status === "actif" ? "Actif" : "En attente", status: true },
-                ].map(({ label, value, mono, status }) => (
-                  <div key={label} className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-3.5 border-b border-[#f8f6f2] last:border-0">
-                    <span className="text-[12px] text-[#999] flex-shrink-0">{label}</span>
-                    {status ? (
-                      <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full ${
-                        value === "Actif" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${value === "Actif" ? "bg-emerald-500" : "bg-amber-500"}`} />
-                        {value}
-                      </span>
-                    ) : (
-                      <span className={`text-[12px] sm:text-[13px] font-semibold text-[#1a1a2e] text-right truncate ml-3 max-w-[55%] sm:max-w-[180px] ${mono ? "font-mono text-[11px] sm:text-[12px] text-[#0f5132]" : ""}`}>
-                        {value}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
+            {/* Numéro en évidence */}
+            <div
+              className="rounded-2xl p-4 sm:p-5"
+              style={{ background: "linear-gradient(135deg, #0f3d1f, #143d20)", border: "1px solid rgba(212,168,67,0.2)" }}
+            >
+              <p className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: "rgba(212,168,67,0.7)" }}>Numéro de membre</p>
+              <p className="text-xl font-mono font-bold" style={{ color: "#d4a843" }}>{currentMember.member_number}</p>
+              <p className="text-[11px] mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>Promotion 2012 · AAES Siguiri</p>
             </div>
 
             {/* Upload photo */}
@@ -185,39 +162,57 @@ export default function DashboardPage() {
               <button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="w-full bg-white rounded-xl sm:rounded-2xl border border-[#f0ebe3] shadow-card p-4 sm:p-5 flex items-center gap-3 sm:gap-4 hover:border-[#0f5132]/30 transition-all disabled:opacity-50 text-left group btn-touch"
+                className="w-full bg-white rounded-2xl border border-[#f0ebe3] shadow-card p-4 sm:p-5 flex items-center gap-3 hover:border-[#0f5132]/30 transition-all disabled:opacity-50 text-left group btn-touch"
               >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[#0f5132]/10 to-[#0f5132]/5 flex items-center justify-center flex-shrink-0 group-hover:from-[#0f5132]/20 group-hover:to-[#0f5132]/10 transition-colors">
-                  {uploading ? <Loader2 className="w-4 h-4 text-[#0f5132] animate-spin" /> : <Upload className="w-4 h-4 text-[#0f5132]" />}
+                <div className="w-11 h-11 rounded-xl bg-[#0f5132]/8 flex items-center justify-center flex-shrink-0 group-hover:bg-[#0f5132]/15 transition-colors">
+                  {uploading ? <Loader2 className="w-5 h-5 text-[#0f5132] animate-spin" /> : <Upload className="w-5 h-5 text-[#0f5132]" />}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[13px] font-semibold text-[#1a1a2e]">
+                  <p className="text-[14px] font-semibold text-[#1a1a2e]">
                     {currentMember.photo_url ? "Changer la photo" : "Ajouter une photo"}
                   </p>
-                  <p className="text-[11px] text-[#999] mt-0.5 truncate">Apparaîtra sur votre carte de membre</p>
+                  <p className="text-[11px] text-[#aaa] mt-0.5">Apparaît sur votre carte</p>
                 </div>
               </button>
               {uploadMsg && (
-                <p className={`text-[11px] mt-2 px-2 font-medium ${uploadMsg.includes("Erreur") ? "text-red-600" : "text-emerald-600"}`}>
+                <p className={`text-[11px] mt-2 px-1 font-medium ${uploadMsg.includes("Erreur") ? "text-red-600" : "text-emerald-600"}`}>
                   {uploadMsg}
                 </p>
               )}
             </div>
 
-            {/* Lien vérification */}
+            {/* Profil */}
+            <div className="bg-white rounded-2xl border border-[#f0ebe3] shadow-card overflow-hidden">
+              <div className="px-4 py-3 border-b border-[#f5f3f0]">
+                <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#bbb]">Informations</p>
+              </div>
+              {[
+                { label: "Téléphone", value: currentMember.phone },
+                ...(currentMember.school ? [{ label: "École", value: currentMember.school }] : []),
+                ...(currentMember.profession ? [{ label: "Profession", value: currentMember.profession }] : []),
+                ...(currentMember.city ? [{ label: "Ville", value: currentMember.city }] : []),
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center justify-between px-4 py-3 border-b border-[#f8f6f2] last:border-0">
+                  <span className="text-[12px] text-[#aaa] flex-shrink-0 w-20">{label}</span>
+                  <span className="text-[12px] font-semibold text-[#1a1a2e] text-right truncate ml-2">
+                    {value}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Vérification */}
             <a
               href={`/verifier/${currentMember.member_number}`}
-              className="block bg-white rounded-xl sm:rounded-2xl border border-[#f0ebe3] shadow-card p-4 sm:p-5 hover:border-[#0f5132]/30 transition-all group btn-touch"
+              className="flex items-center justify-between bg-white rounded-2xl border border-[#f0ebe3] shadow-card p-4 sm:p-5 hover:border-[#0f5132]/30 transition-all group btn-touch"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] text-[#999] mb-0.5 sm:mb-1">Page publique</p>
-                  <p className="text-[13px] sm:text-[14px] font-bold text-[#1a1a2e] group-hover:text-[#0f5132] transition-colors">
-                    Voir ma vérification
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-[#ccc] group-hover:text-[#0f5132] transition-colors flex-shrink-0" />
+              <div>
+                <p className="text-[11px] text-[#bbb] mb-0.5">Lien public</p>
+                <p className="text-[13px] font-bold text-[#1a1a2e] group-hover:text-[#0f5132] transition-colors">
+                  Voir ma page de vérification
+                </p>
               </div>
+              <ExternalLink className="w-4 h-4 text-[#ddd] group-hover:text-[#0f5132] transition-colors flex-shrink-0" />
             </a>
 
           </div>
