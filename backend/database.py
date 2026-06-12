@@ -23,7 +23,8 @@ def migrate_db():
     with engine.connect() as conn:
         for col_name, col_type in new_columns:
             try:
-                conn.execute(text(f"ALTER TABLE members ADD COLUMN {col_name} {col_type}"))
+                # Guillemets obligatoires pour éviter les conflits avec les mots-clés SQL (ex: "option")
+                conn.execute(text(f'ALTER TABLE members ADD COLUMN "{col_name}" {col_type}'))
                 conn.commit()
             except Exception:
                 conn.rollback()

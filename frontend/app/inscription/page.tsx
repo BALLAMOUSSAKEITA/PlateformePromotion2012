@@ -140,8 +140,13 @@ export default function InscriptionPage() {
 
       router.push("/dashboard");
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { detail?: string } } };
-      setError(e?.response?.data?.detail || "Une erreur est survenue.");
+      const e = err as { response?: { data?: { detail?: string | { msg: string }[] } } };
+      const detail = e?.response?.data?.detail;
+      if (Array.isArray(detail)) {
+        setError(detail.map((d) => d.msg).join(", "));
+      } else {
+        setError(detail || "Une erreur est survenue. Vérifiez votre connexion.");
+      }
     } finally {
       setLoading(false);
     }
@@ -240,18 +245,28 @@ export default function InscriptionPage() {
               <FloatField label="École d'origine *" value={form.school} onChange={(v) => set("school", v)} />
 
               {/* Select Option */}
-              <div className="field-group">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[#5a5a6e]">Option *</label>
                 <select
                   value={form.option}
                   onChange={(e) => set("option", e.target.value)}
-                  className={form.option ? "filled" : ""}
+                  style={{
+                    padding: "12px 14px",
+                    borderRadius: "12px",
+                    border: "1.5px solid #e8e3db",
+                    background: "#fff",
+                    fontSize: "14px",
+                    color: form.option ? "#1a1a2e" : "#aaa",
+                    outline: "none",
+                    width: "100%",
+                    appearance: "auto",
+                  }}
                 >
-                  <option value="" disabled> </option>
+                  <option value="" disabled>Sélectionner une option</option>
                   {OPTIONS.map((o) => (
                     <option key={o} value={o}>{o}</option>
                   ))}
                 </select>
-                <label>Option *</label>
               </div>
 
               <FloatField label="Profession *" value={form.profession} onChange={(v) => set("profession", v)} />
