@@ -98,7 +98,10 @@ export default function VerifierPage() {
                   {[
                     { label: "Numéro de membre", value: member.member_number, mono: true },
                     ...(member.school ? [{ label: "École d'origine", value: member.school }] : []),
+                    ...(member.option ? [{ label: "Option", value: member.option }] : []),
                     ...(member.profession ? [{ label: "Profession", value: member.profession }] : []),
+                    ...(member.current_activity ? [{ label: "Activité actuelle", value: member.current_activity }] : []),
+                    ...(member.country ? [{ label: "Pays", value: member.country }] : []),
                     ...(member.city ? [{ label: "Ville", value: member.city }] : []),
                   ].map(({ label, value, mono }) => (
                     <div key={label} className="flex items-center justify-between py-3.5 sm:py-4 border-b border-[#f8f6f2]">

@@ -11,9 +11,12 @@ export default function MemberCard({ member }: Props) {
   });
 
   const details = [
-    { label: "Telephone", value: member.phone },
-    { label: "Ecole", value: member.school },
+    { label: "Téléphone", value: member.phone },
+    { label: "École", value: member.school },
+    { label: "Option", value: member.option },
     { label: "Profession", value: member.profession },
+    ...(member.current_activity ? [{ label: "Activité", value: member.current_activity }] : []),
+    { label: "Pays", value: member.country },
     { label: "Ville", value: member.city },
   ].filter((d) => d.value);
 
@@ -146,14 +149,14 @@ export default function MemberCard({ member }: Props) {
             style={{ background: "linear-gradient(90deg, transparent, rgba(212,168,67,0.3), transparent)" }}
           />
 
-          {/* Informations */}
+          {/* Informations en grille 2 colonnes */}
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
             {details.map(({ label, value }) => (
               <div key={label} className="min-w-0">
                 <p className="text-[9px] font-semibold uppercase tracking-[0.12em] mb-0.5" style={{ color: "rgba(212,168,67,0.6)" }}>
                   {label}
                 </p>
-                <p className="text-[12px] font-medium truncate" style={{ color: "rgba(255,255,255,0.88)" }}>
+                <p className="text-[11px] font-medium truncate" style={{ color: "rgba(255,255,255,0.88)" }}>
                   {value}
                 </p>
               </div>
@@ -162,7 +165,7 @@ export default function MemberCard({ member }: Props) {
               <p className="text-[9px] font-semibold uppercase tracking-[0.12em] mb-0.5" style={{ color: "rgba(212,168,67,0.6)" }}>
                 Membre depuis
               </p>
-              <p className="text-[12px] font-medium" style={{ color: "rgba(255,255,255,0.88)" }}>
+              <p className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.88)" }}>
                 {joinedDate}
               </p>
             </div>

@@ -11,6 +11,10 @@ from dependencies import get_current_member
 
 router = APIRouter(prefix="/membres", tags=["Membres"])
 
+ALLOWED_IMAGE_TYPES = ("image/jpeg", "image/png", "image/webp")
+ALLOWED_CV_TYPES = ("application/pdf", "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
 
 @router.get("/moi", response_model=schemas.MemberOut)
 def get_me(current_member: models.Member = Depends(get_current_member)):
@@ -53,22 +57,44 @@ def upload_photo(
     db: Session = Depends(get_db),
     current_member: models.Member = Depends(get_current_member),
 ):
-    if file.content_type not in ("image/jpeg", "image/png", "image/webp"):
+    if file.content_type not in ALLOWED_IMAGE_TYPES:
         raise HTTPException(status_code=400, detail="Format non supporté (jpg/png/webp).")
 
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-    ext = file.filename.split(".")[-1]
-    filename = f"{current_member.member_number}.{ext}"
+    ext = (file.filename or "photo.jpg").rsplit(".", 1)[-1]
+    filename = f"{current_member.member_number}_photo.{ext}"
     file_path = os.path.join(settings.UPLOAD_DIR, filename)
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    photo_url = f"{settings.BASE_URL}/uploads/{filename}"
-    current_member.photo_url = photo_url
+    current_member.photo_url = f"{settings.BASE_URL}/uploads/{filename}"
     db.commit()
     db.refresh(current_member)
-    return {"photo_url": photo_url}
+    return {"photo_url": current_member.photo_url}
+
+
+@router.post("/moi/cv")
+def upload_cv(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_member: models.Member = Depends(get_current_member),
+):
+    if file.content_type not in ALLOWED_CV_TYPES:
+        raise HTTPException(status_code=400, detail="Format non supporté (pdf/doc/docx).")
+
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    ext = (file.filename or "cv.pdf").rsplit(".", 1)[-1]
+    filename = f"{current_member.member_number}_cv.{ext}"
+    file_path = os.path.join(settings.UPLOAD_DIR, filename)
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    current_member.cv_url = f"{settings.BASE_URL}/uploads/{filename}"
+    db.commit()
+    db.refresh(current_member)
+    return {"cv_url": current_member.cv_url}
 
 
 @router.put("/moi", response_model=schemas.MemberOut)

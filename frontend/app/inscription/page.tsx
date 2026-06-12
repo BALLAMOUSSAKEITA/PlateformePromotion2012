@@ -1,27 +1,44 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import API from "@/lib/api";
 import { AuthResponse } from "@/types";
-import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, CheckCircle2, Upload } from "lucide-react";
+
+const OPTIONS = [
+  "Sciences mathématiques",
+  "Sciences sociales",
+  "Sciences expérimentales",
+];
+
+const STEP_LABELS = ["Identité", "Localisation", "Sécurité"];
 
 export default function InscriptionPage() {
   const { login } = useAuth();
   const router = useRouter();
+  const photoRef = useRef<HTMLInputElement>(null);
+  const cvRef = useRef<HTMLInputElement>(null);
+
   const [step, setStep] = useState(1);
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [cvFile, setCvFile] = useState<File | null>(null);
 
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
-    phone: "",
     school: "",
+    option: "",
     profession: "",
+    current_activity: "",
+    country: "",
     city: "",
+    phone: "",
+    contact_email: "",
     password: "",
     confirm_password: "",
   });
@@ -33,20 +50,16 @@ export default function InscriptionPage() {
       setError("Le prénom et le nom sont requis.");
       return false;
     }
-    if (!form.phone.trim()) {
-      setError("Le numéro de téléphone est requis.");
-      return false;
-    }
     if (!form.school.trim()) {
       setError("L'école d'origine est requise.");
       return false;
     }
-    if (!form.profession.trim()) {
-      setError("La profession actuelle est requise.");
+    if (!form.option) {
+      setError("Veuillez sélectionner une option.");
       return false;
     }
-    if (!form.city.trim()) {
-      setError("La ville actuelle est requise.");
+    if (!form.profession.trim()) {
+      setError("La profession est requise.");
       return false;
     }
     setError("");
@@ -54,6 +67,27 @@ export default function InscriptionPage() {
   };
 
   const validateStep2 = () => {
+    if (!form.country.trim()) {
+      setError("Le pays de résidence est requis.");
+      return false;
+    }
+    if (!form.city.trim()) {
+      setError("La ville de résidence est requise.");
+      return false;
+    }
+    if (!form.phone.trim()) {
+      setError("Le numéro de téléphone est requis.");
+      return false;
+    }
+    if (form.contact_email && !/\S+@\S+\.\S+/.test(form.contact_email)) {
+      setError("L'adresse email est invalide.");
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
+  const validateStep3 = () => {
     if (form.password.length < 6) {
       setError("Minimum 6 caractères pour le mot de passe.");
       return false;
@@ -67,19 +101,43 @@ export default function InscriptionPage() {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep2()) return;
+    if (!validateStep3()) return;
     setLoading(true);
     try {
       const res = await API.post<AuthResponse>("/auth/inscription", {
         first_name: form.first_name.trim(),
         last_name: form.last_name.trim(),
-        phone: form.phone.trim(),
         school: form.school.trim(),
+        option: form.option,
         profession: form.profession.trim(),
+        current_activity: form.current_activity.trim() || undefined,
+        country: form.country.trim(),
         city: form.city.trim(),
+        phone: form.phone.trim(),
+        contact_email: form.contact_email.trim() || undefined,
         password: form.password,
       });
+
       login(res.data.access_token, res.data.member);
+
+      // Upload photo si sélectionnée
+      if (photoFile) {
+        const fd = new FormData();
+        fd.append("file", photoFile);
+        await API.post("/membres/moi/photo", fd, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+
+      // Upload CV si sélectionné
+      if (cvFile) {
+        const fd = new FormData();
+        fd.append("file", cvFile);
+        await API.post("/membres/moi/cv", fd, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+
       router.push("/dashboard");
     } catch (err: unknown) {
       const e = err as { response?: { data?: { detail?: string } } };
@@ -92,7 +150,8 @@ export default function InscriptionPage() {
   return (
     <div className="min-h-[100svh] flex flex-col lg:flex-row">
 
-      <div className="hidden lg:flex w-[45%] bg-gradient-to-br from-[#0f5132] via-[#145a38] to-[#0a3d26] flex-col justify-between p-10 relative overflow-hidden">
+      {/* ─ Panneau gauche desktop ─ */}
+      <div className="hidden lg:flex w-[42%] bg-gradient-to-br from-[#0f5132] via-[#145a38] to-[#0a3d26] flex-col justify-between p-10 relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 11px)",
         }} />
@@ -106,53 +165,62 @@ export default function InscriptionPage() {
         </div>
 
         <div className="relative">
-          <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-3 py-1 mb-6">
-            <span className="text-[11px] font-semibold text-[#d4a843]">100% Gratuit</span>
-          </div>
           <h2 className="font-display text-[2.25rem] text-white leading-[1.15] mb-4">
             Rejoignez votre<br />promotion.
           </h2>
           <p className="text-white/40 text-[15px] leading-relaxed max-w-sm">
-            Renseignez vos informations et obtenez immédiatement votre carte de membre officielle.
+            Renseignez vos informations pour obtenir votre carte de membre officielle de la Promotion 2012.
           </p>
         </div>
 
-        <div className="relative flex items-center gap-3">
-          {[1, 2].map((s) => (
-            <div key={s} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold transition-all ${
-                step === s ? "bg-[#d4a843] text-[#0f5132]" : step > s ? "bg-white/20 text-white" : "bg-white/5 text-white/30"
-              }`}>
-                {step > s ? <CheckCircle2 className="w-4 h-4" /> : s}
+        {/* Indicateur d'étapes */}
+        <div className="relative flex items-center gap-4">
+          {STEP_LABELS.map((label, i) => {
+            const s = i + 1;
+            return (
+              <div key={s} className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold transition-all ${
+                  step === s ? "bg-[#d4a843] text-[#0f5132]"
+                  : step > s ? "bg-white/20 text-white"
+                  : "bg-white/5 text-white/30"
+                }`}>
+                  {step > s ? <CheckCircle2 className="w-4 h-4" /> : s}
+                </div>
+                <span className={`text-[12px] ${step === s ? "text-white font-medium" : "text-white/30"}`}>
+                  {label}
+                </span>
               </div>
-              <span className={`text-[12px] ${step === s ? "text-white font-medium" : "text-white/30"}`}>
-                {s === 1 ? "Identité" : "Sécurité"}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      <div className="flex-1 flex items-start sm:items-center justify-center px-4 sm:px-6 py-8 sm:py-16 bg-[#fefcf9] min-h-[100svh] lg:min-h-0">
-        <div className="w-full max-w-[420px]">
+      {/* ─ Formulaire ─ */}
+      <div className="flex-1 flex items-start justify-center px-4 sm:px-6 py-8 bg-[#fefcf9] min-h-[100svh] lg:min-h-0 overflow-y-auto">
+        <div className="w-full max-w-[440px] py-4">
 
-          <div className="lg:hidden mb-6">
+          {/* Retour mobile */}
+          <div className="lg:hidden mb-5">
             <Link href="/" className="inline-flex items-center gap-2 text-[13px] font-medium text-[#999] hover:text-[#0f5132] transition-colors btn-touch py-2">
               <ArrowLeft className="w-3.5 h-3.5" />
               Retour
             </Link>
           </div>
 
+          {/* Barre de progression mobile */}
           <div className="lg:hidden flex items-center gap-2 mb-5">
-            <div className={`h-1.5 rounded-full flex-1 transition-colors ${step >= 1 ? "bg-[#0f5132]" : "bg-[#e8e3db]"}`} />
-            <div className={`h-1.5 rounded-full flex-1 transition-colors ${step >= 2 ? "bg-[#0f5132]" : "bg-[#e8e3db]"}`} />
+            {[1, 2, 3].map((s) => (
+              <div key={s} className={`h-1.5 rounded-full flex-1 transition-colors ${step >= s ? "bg-[#0f5132]" : "bg-[#e8e3db]"}`} />
+            ))}
           </div>
 
           <span className="text-[12px] font-bold tracking-[0.15em] uppercase text-[#d4a843]">
-            Étape {step} sur 2
+            Étape {step} sur 3 — {STEP_LABELS[step - 1]}
           </span>
-          <h1 className="font-display text-[1.5rem] sm:text-[1.75rem] text-[#1a1a2e] mt-2 mb-6 sm:mb-8">
-            {step === 1 ? "Vos renseignements" : "Choisissez un mot de passe"}
+          <h1 className="font-display text-[1.5rem] sm:text-[1.75rem] text-[#1a1a2e] mt-2 mb-6">
+            {step === 1 && "Votre identité"}
+            {step === 2 && "Localisation & contact"}
+            {step === 3 && "Sécurité & fichiers"}
           </h1>
 
           {error && (
@@ -162,20 +230,39 @@ export default function InscriptionPage() {
             </div>
           )}
 
+          {/* ─ Étape 1 : Identité ─ */}
           {step === 1 && (
-            <div className="space-y-3 sm:space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <FloatField label="Prénom" value={form.first_name} onChange={(v) => set("first_name", v)} />
-                <FloatField label="Nom" value={form.last_name} onChange={(v) => set("last_name", v)} />
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <FloatField label="Prénom *" value={form.first_name} onChange={(v) => set("first_name", v)} />
+                <FloatField label="Nom *" value={form.last_name} onChange={(v) => set("last_name", v)} />
               </div>
-              <FloatField label="Numéro de téléphone" value={form.phone} onChange={(v) => set("phone", v)} type="tel" />
-              <FloatField label="École d'origine" value={form.school} onChange={(v) => set("school", v)} />
-              <FloatField label="Profession actuelle" value={form.profession} onChange={(v) => set("profession", v)} />
-              <FloatField label="Ville actuelle" value={form.city} onChange={(v) => set("city", v)} />
+              <FloatField label="École d'origine *" value={form.school} onChange={(v) => set("school", v)} />
+
+              {/* Select Option */}
+              <div className="field-group">
+                <select
+                  value={form.option}
+                  onChange={(e) => set("option", e.target.value)}
+                  className={form.option ? "filled" : ""}
+                >
+                  <option value="" disabled> </option>
+                  {OPTIONS.map((o) => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
+                </select>
+                <label>Option *</label>
+              </div>
+
+              <FloatField label="Profession *" value={form.profession} onChange={(v) => set("profession", v)} />
+              <div className="relative">
+                <FloatField label="Activité actuelle (facultatif)" value={form.current_activity} onChange={(v) => set("current_activity", v)} />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#bbb] pointer-events-none">optionnel</span>
+              </div>
 
               <button
                 onClick={() => validateStep1() && setStep(2)}
-                className="w-full text-[14px] font-semibold text-white bg-[#0f5132] py-3.5 rounded-xl hover:bg-[#0d4429] transition-all hover:shadow-lg hover:shadow-[#0f5132]/20 mt-4 flex items-center justify-center gap-2 group btn-touch"
+                className="w-full text-[14px] font-semibold text-white bg-[#0f5132] py-3.5 rounded-xl hover:bg-[#0d4429] transition-all mt-2 flex items-center justify-center gap-2 group btn-touch"
               >
                 Continuer
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -183,8 +270,39 @@ export default function InscriptionPage() {
             </div>
           )}
 
+          {/* ─ Étape 2 : Localisation & Contact ─ */}
           {step === 2 && (
-            <div className="space-y-3 sm:space-y-4">
+            <div className="space-y-3">
+              <FloatField label="Pays de résidence *" value={form.country} onChange={(v) => set("country", v)} />
+              <FloatField label="Ville de résidence *" value={form.city} onChange={(v) => set("city", v)} />
+              <FloatField label="Téléphone *" value={form.phone} onChange={(v) => set("phone", v)} type="tel" />
+              <div className="relative">
+                <FloatField label="Adresse email (facultatif)" value={form.contact_email} onChange={(v) => set("contact_email", v)} type="email" />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#bbb] pointer-events-none">optionnel</span>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => { setStep(1); setError(""); }}
+                  className="px-4 py-3.5 text-[13px] font-semibold text-[#5a5a6e] bg-white border border-[#e8e3db] rounded-xl hover:bg-[#f8f6f2] transition-colors flex items-center gap-2 btn-touch"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => validateStep2() && setStep(3)}
+                  className="flex-1 text-[14px] font-semibold text-white bg-[#0f5132] py-3.5 rounded-xl hover:bg-[#0d4429] transition-all flex items-center justify-center gap-2 group btn-touch"
+                >
+                  Continuer
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ─ Étape 3 : Sécurité & Fichiers ─ */}
+          {step === 3 && (
+            <div className="space-y-3">
+              {/* Mot de passe */}
               <div className="field-group relative">
                 <input
                   type={showPass ? "text" : "password"}
@@ -193,38 +311,75 @@ export default function InscriptionPage() {
                   placeholder=" "
                   className="pr-12"
                 />
-                <label>Mot de passe (min. 6 car.)</label>
+                <label>Mot de passe * (min. 6 car.)</label>
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-2.5 text-[#ccc] hover:text-[#0f5132] transition-colors btn-touch flex items-center justify-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#ccc] hover:text-[#0f5132] transition-colors btn-touch flex items-center justify-center"
                 >
                   {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <FloatField label="Confirmer le mot de passe" value={form.confirm_password} onChange={(v) => set("confirm_password", v)} type="password" />
+              <FloatField label="Confirmer le mot de passe *" value={form.confirm_password} onChange={(v) => set("confirm_password", v)} type="password" />
 
-              <div className="flex gap-3 pt-2 sm:pt-3">
+              {/* Photo facultative */}
+              <input ref={photoRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden"
+                onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)} />
+              <button
+                type="button"
+                onClick={() => photoRef.current?.click()}
+                className="w-full flex items-center gap-3 bg-white border border-[#e8e3db] rounded-xl px-4 py-3.5 text-left hover:border-[#0f5132]/40 transition-colors btn-touch"
+              >
+                <div className="w-9 h-9 rounded-lg bg-[#f0f7f2] flex items-center justify-center flex-shrink-0">
+                  <Upload className="w-4 h-4 text-[#0f5132]" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold text-[#1a1a2e] truncate">
+                    {photoFile ? photoFile.name : "Photo de profil"}
+                  </p>
+                  <p className="text-[11px] text-[#aaa]">JPG, PNG, WebP — facultatif</p>
+                </div>
+              </button>
+
+              {/* CV facultatif */}
+              <input ref={cvRef} type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden"
+                onChange={(e) => setCvFile(e.target.files?.[0] ?? null)} />
+              <button
+                type="button"
+                onClick={() => cvRef.current?.click()}
+                className="w-full flex items-center gap-3 bg-white border border-[#e8e3db] rounded-xl px-4 py-3.5 text-left hover:border-[#0f5132]/40 transition-colors btn-touch"
+              >
+                <div className="w-9 h-9 rounded-lg bg-[#f0f7f2] flex items-center justify-center flex-shrink-0">
+                  <Upload className="w-4 h-4 text-[#0f5132]" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold text-[#1a1a2e] truncate">
+                    {cvFile ? cvFile.name : "CV"}
+                  </p>
+                  <p className="text-[11px] text-[#aaa]">PDF, DOC, DOCX — facultatif</p>
+                </div>
+              </button>
+
+              <div className="flex gap-3 pt-2">
                 <button
-                  onClick={() => { setStep(1); setError(""); }}
-                  className="px-4 sm:px-5 py-3.5 text-[13px] font-semibold text-[#5a5a6e] bg-white border border-[#e8e3db] rounded-xl hover:bg-[#f8f6f2] transition-colors flex items-center gap-2 btn-touch"
+                  onClick={() => { setStep(2); setError(""); }}
+                  className="px-4 py-3.5 text-[13px] font-semibold text-[#5a5a6e] bg-white border border-[#e8e3db] rounded-xl hover:bg-[#f8f6f2] transition-colors flex items-center gap-2 btn-touch"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Retour</span>
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="flex-1 text-[14px] font-semibold text-white bg-[#0f5132] py-3.5 rounded-xl hover:bg-[#0d4429] transition-all hover:shadow-lg hover:shadow-[#0f5132]/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:shadow-none btn-touch"
+                  className="flex-1 text-[14px] font-semibold text-white bg-[#0f5132] py-3.5 rounded-xl hover:bg-[#0d4429] transition-all flex items-center justify-center gap-2 disabled:opacity-50 btn-touch"
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {loading ? "Création…" : "Créer mon compte"}
+                  {loading ? "Création en cours..." : "Créer mon compte"}
                 </button>
               </div>
             </div>
           )}
 
-          <div className="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-[#f0ebe3]">
+          <div className="mt-8 pt-5 border-t border-[#f0ebe3]">
             <p className="text-center text-[13px] text-[#999]">
               Déjà membre ?{" "}
               <Link href="/connexion" className="text-[#0f5132] font-semibold hover:underline">

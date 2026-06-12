@@ -14,6 +14,11 @@ def migrate_db():
         ("school", "VARCHAR(150)"),
         ("profession", "VARCHAR(150)"),
         ("city", "VARCHAR(150)"),
+        ("contact_email", "VARCHAR(255)"),
+        ("option", "VARCHAR(50)"),
+        ("current_activity", "VARCHAR(255)"),
+        ("country", "VARCHAR(100)"),
+        ("cv_url", "VARCHAR(500)"),
     ]
     with engine.connect() as conn:
         for col_name, col_type in new_columns:

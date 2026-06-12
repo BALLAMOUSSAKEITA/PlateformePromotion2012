@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import MemberCard from "@/components/MemberCard";
 import API from "@/lib/api";
-import { Loader2, Upload, ExternalLink, LogOut, User, Menu, X, CreditCard } from "lucide-react";
+import { Loader2, Upload, ExternalLink, LogOut, User, Menu, X, CreditCard, FileText } from "lucide-react";
 import Link from "next/link";
 
 const CARD_DURATION = 30;
@@ -13,11 +13,14 @@ export default function DashboardPage() {
   const { member, logout, loading } = useAuth();
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
+  const cvRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [uploading, setUploading] = useState(false);
+  const [uploadingCv, setUploadingCv] = useState(false);
   const [currentMember, setCurrentMember] = useState(member);
   const [uploadMsg, setUploadMsg] = useState("");
+  const [cvMsg, setCvMsg] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
 
   // Carte : visible / countdown
@@ -83,6 +86,26 @@ export default function DashboardPage() {
       setUploadMsg("Erreur lors de l'envoi.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleCvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCv(true);
+    setCvMsg("");
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await API.post("/membres/moi/cv", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setCurrentMember((m) => m ? { ...m, cv_url: res.data.cv_url } : m);
+      setCvMsg("CV mis à jour !");
+    } catch {
+      setCvMsg("Erreur lors de l'envoi.");
+    } finally {
+      setUploadingCv(false);
     }
   };
 
@@ -305,16 +328,54 @@ export default function DashboardPage() {
               )}
             </div>
 
+            {/* Upload CV */}
+            <div>
+              <input
+                type="file"
+                ref={cvRef}
+                onChange={handleCvUpload}
+                accept=".pdf,.doc,.docx,application/pdf"
+                className="hidden"
+              />
+              <button
+                onClick={() => cvRef.current?.click()}
+                disabled={uploadingCv}
+                className="w-full bg-white rounded-2xl border border-[#f0ebe3] shadow-card p-4 sm:p-5 flex items-center gap-3 hover:border-[#0f5132]/30 transition-all disabled:opacity-50 text-left group btn-touch"
+              >
+                <div className="w-11 h-11 rounded-xl bg-[#f0f7f2] flex items-center justify-center flex-shrink-0 group-hover:bg-[#d8edd8] transition-colors">
+                  {uploadingCv
+                    ? <Loader2 className="w-5 h-5 text-[#0f5132] animate-spin" />
+                    : <FileText className="w-5 h-5 text-[#0f5132]" />
+                  }
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[14px] font-semibold text-[#1a1a2e]">
+                    {currentMember.cv_url ? "Mettre à jour le CV" : "Ajouter un CV"}
+                  </p>
+                  <p className="text-[11px] text-[#aaa] mt-0.5">PDF, DOC, DOCX — facultatif</p>
+                </div>
+              </button>
+              {cvMsg && (
+                <p className={`text-[11px] mt-2 px-1 font-medium ${cvMsg.includes("Erreur") ? "text-red-600" : "text-emerald-600"}`}>
+                  {cvMsg}
+                </p>
+              )}
+            </div>
+
             {/* Informations profil */}
             <div className="bg-white rounded-2xl border border-[#f0ebe3] shadow-card overflow-hidden">
               <div className="px-4 py-3 border-b border-[#f5f3f0]">
                 <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-[#bbb]">Informations</p>
               </div>
               {[
-                { label: "Telephone", value: currentMember.phone },
-                ...(currentMember.school ? [{ label: "Ecole", value: currentMember.school }] : []),
+                { label: "Téléphone", value: currentMember.phone },
+                ...(currentMember.school ? [{ label: "École", value: currentMember.school }] : []),
+                ...(currentMember.option ? [{ label: "Option", value: currentMember.option }] : []),
                 ...(currentMember.profession ? [{ label: "Profession", value: currentMember.profession }] : []),
+                ...(currentMember.current_activity ? [{ label: "Activité", value: currentMember.current_activity }] : []),
+                ...(currentMember.country ? [{ label: "Pays", value: currentMember.country }] : []),
                 ...(currentMember.city ? [{ label: "Ville", value: currentMember.city }] : []),
+                ...(currentMember.contact_email ? [{ label: "Email", value: currentMember.contact_email }] : []),
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-center justify-between px-4 py-3 border-b border-[#f8f6f2] last:border-0">
                   <span className="text-[12px] text-[#aaa] flex-shrink-0 w-20">{label}</span>
