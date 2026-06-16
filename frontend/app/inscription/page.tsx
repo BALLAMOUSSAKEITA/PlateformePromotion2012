@@ -106,16 +106,7 @@ export default function InscriptionPage() {
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleCountryChange = (countryName: string) => {
-    const country = COUNTRIES.find((c) => c.name === countryName);
-    setForm((f) => {
-      const currentDial = COUNTRIES.find((c) => f.phone.startsWith(c.dial))?.dial ?? "";
-      const phoneWithoutDial = currentDial ? f.phone.slice(currentDial.length).trimStart() : f.phone;
-      const newDial = country?.dial ?? "";
-      const newPhone = newDial
-        ? phoneWithoutDial ? `${newDial} ${phoneWithoutDial}` : newDial
-        : phoneWithoutDial;
-      return { ...f, country: countryName, phone: newPhone };
-    });
+    setForm((f) => ({ ...f, country: countryName }));
   };
 
   const validateStep1 = () => {
@@ -404,11 +395,7 @@ export default function InscriptionPage() {
                     type="tel"
                     value={form.phone}
                     onChange={(e) => set("phone", e.target.value)}
-                    placeholder={
-                      COUNTRIES.find((c) => c.name === form.country)
-                        ? `${COUNTRIES.find((c) => c.name === form.country)?.dial} 6XX XX XX XX`
-                        : "Numéro de téléphone"
-                    }
+                    placeholder="6XX XX XX XX"
                     style={{
                       flex: 1,
                       padding: "12px 14px",
