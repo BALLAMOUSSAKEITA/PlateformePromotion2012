@@ -6,7 +6,7 @@ import API from "@/lib/api";
 import { Member } from "@/types";
 import {
   ShieldCheck, LogOut, Trash2, Loader2,
-  Search, RefreshCw, AlertTriangle, Users, X,
+  Search, RefreshCw, AlertTriangle, Users, X, FileText,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -185,6 +185,7 @@ export default function AdminDashboardPage() {
                     <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider hidden lg:table-cell">Profession</th>
                     <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider">Statut</th>
                     <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider hidden sm:table-cell">Inscription</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider">CV</th>
                     <th className="px-4 py-3" />
                   </tr>
                 </thead>
@@ -221,6 +222,22 @@ export default function AdminDashboardPage() {
                       </td>
                       <td className="px-4 py-3.5 text-[12px] text-[#bbb] hidden sm:table-cell whitespace-nowrap">
                         {new Date(m.created_at).toLocaleDateString("fr-FR")}
+                      </td>
+                      <td className="px-4 py-3.5">
+                        {m.cv_url ? (
+                          <a
+                            href={m.cv_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#0f5132] bg-[#f0f7f2] hover:bg-[#d8edd8] border border-[#c8e6c8] px-2.5 py-1.5 rounded-lg transition-colors btn-touch"
+                            title="Télécharger le CV"
+                          >
+                            <FileText className="w-3.5 h-3.5" />
+                            CV
+                          </a>
+                        ) : (
+                          <span className="text-[11px] text-[#ddd]">—</span>
+                        )}
                       </td>
                       <td className="px-4 py-3.5">
                         {confirmId === m.id ? (
