@@ -229,6 +229,9 @@ export default function HomePage() {
             <p className="text-[11px] sm:text-[12px] text-[#999] text-center">
               Association des Anciens Élèves de Siguiri · Promotion 2012
             </p>
+            <Link href="/admin/connexion" className="text-[11px] text-[#ccc] hover:text-[#999] transition-colors">
+              Administration
+            </Link>
           </div>
         </div>
       </footer>

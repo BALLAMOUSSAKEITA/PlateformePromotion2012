@@ -1,107 +1,120 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import API from "@/lib/api";
 import { AuthResponse } from "@/types";
-import { Loader2, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Loader2, ArrowLeft, ShieldCheck } from "lucide-react";
 
 export default function AdminConnexionPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [form, setForm] = useState({ username: "", password: "" });
+  const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
-      setError("Veuillez remplir tous les champs.");
-      return;
-    }
     setLoading(true);
     setError("");
     try {
-      const res = await API.post<AuthResponse>("/admin/connexion", {
-        username: username.trim(),
-        password,
-      });
+      const res = await API.post<AuthResponse>("/admin/connexion", form);
       localStorage.setItem("admin_token", res.data.access_token);
       localStorage.setItem("admin_member", JSON.stringify(res.data.member));
       router.push("/admin/dashboard");
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { detail?: string } } };
-      setError(e?.response?.data?.detail || "Identifiants incorrects.");
+      const apiErr = err as { response?: { data?: { detail?: string } } };
+      setError(apiErr?.response?.data?.detail || "Identifiants incorrects.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f0f1a] px-4">
-      <div className="w-full max-w-[380px]">
-        {/* Logo / titre */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-[#d4a843]/10 border border-[#d4a843]/20 flex items-center justify-center mb-4">
-            <ShieldCheck className="w-7 h-7 text-[#d4a843]" />
+    <div className="min-h-[100svh] bg-[#fefcf9] flex items-start sm:items-center justify-center px-4 sm:px-6 py-8 sm:py-16 relative">
+      <div className="absolute inset-0 pattern-kente opacity-30" />
+      <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 rounded-full bg-[#0f5132]/[0.03] blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-48 sm:w-64 h-48 sm:h-64 rounded-full bg-[#d4a843]/[0.05] blur-3xl" />
+
+      <div className="relative w-full max-w-[400px]">
+
+        <Link href="/" className="inline-flex items-center gap-2 text-[13px] font-medium text-[#999] hover:text-[#0f5132] transition-colors btn-touch py-2">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Retour à l&apos;accueil
+        </Link>
+
+        <div className="mt-6 sm:mt-10 mb-6 sm:mb-8">
+          <div className="flex items-center gap-2.5 mb-5 sm:mb-6">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0f5132] to-[#1a7a4c] flex items-center justify-center flex-shrink-0">
+              <ShieldCheck className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[13px] font-bold text-[#1a1a2e] leading-none">Administration</span>
+              <span className="text-[9px] font-medium text-[#999] tracking-wider uppercase">Anciens Élèves · Siguiri 2012</span>
+            </div>
           </div>
-          <h1 className="text-xl font-bold text-white">Espace Administrateur</h1>
-          <p className="text-sm text-white/40 mt-1">Filifing Siguiri – Promotion 2012</p>
+          <h1 className="font-display text-[1.5rem] sm:text-[1.75rem] text-[#1a1a2e] mb-2">Espace administrateur</h1>
+          <p className="text-[14px] sm:text-[15px] text-[#5a5a6e]">Connectez-vous pour gérer les membres.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-              {error}
+        <div className="bg-white rounded-2xl border border-[#f0ebe3] shadow-card p-5 sm:p-7">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            {error && (
+              <div className="flex items-start gap-3 text-sm text-red-700 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                {error}
+              </div>
+            )}
+
+            <div className="field-group">
+              <input
+                type="text"
+                value={form.username}
+                onChange={(e) => set("username", e.target.value)}
+                placeholder=" "
+                required
+                autoComplete="username"
+              />
+              <label>Identifiant</label>
             </div>
-          )}
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-white/50 uppercase tracking-wider">
-              Identifiant
-            </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="admin"
-              autoComplete="username"
-              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 outline-none focus:border-[#d4a843]/50 focus:bg-white/8 transition-colors"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-white/50 uppercase tracking-wider">
-              Mot de passe
-            </label>
-            <div className="relative">
+            <div className="field-group relative">
               <input
                 type={showPass ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                value={form.password}
+                onChange={(e) => set("password", e.target.value)}
+                placeholder=" "
+                required
                 autoComplete="current-password"
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder:text-white/20 outline-none focus:border-[#d4a843]/50 focus:bg-white/8 transition-colors"
+                className="pr-12"
               />
+              <label>Mot de passe</label>
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                className="absolute right-3 top-2.5 text-[#ccc] hover:text-[#0f5132] transition-colors btn-touch flex items-center justify-center"
               >
-                {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#d4a843] hover:bg-[#c49a38] text-[#0f0f1a] font-bold text-sm py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-60 mt-2"
-          >
-            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {loading ? "Connexion..." : "Se connecter"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full text-[14px] font-semibold text-white bg-[#0f5132] py-3.5 rounded-xl hover:bg-[#0d4429] transition-all hover:shadow-lg hover:shadow-[#0f5132]/20 flex items-center justify-center gap-2 disabled:opacity-50 mt-2 btn-touch"
+            >
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              {loading ? "Connexion…" : "Se connecter"}
+            </button>
+          </form>
+        </div>
+
+        <div className="mt-6 sm:mt-8 text-center pb-safe">
+          <Link href="/connexion" className="text-[13px] text-[#999] hover:text-[#0f5132] transition-colors">
+            Connexion membre →
+          </Link>
+        </div>
       </div>
     </div>
   );
