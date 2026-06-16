@@ -19,6 +19,7 @@ def migrate_db():
         ("current_activity", "VARCHAR(255)"),
         ("country", "VARCHAR(100)"),
         ("cv_url", "VARCHAR(500)"),
+        ("is_admin", "BOOLEAN DEFAULT FALSE"),
     ]
     with engine.connect() as conn:
         for col_name, col_type in new_columns:

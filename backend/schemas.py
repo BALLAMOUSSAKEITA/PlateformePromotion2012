@@ -46,10 +46,16 @@ class MemberOut(BaseModel):
     photo_url: Optional[str] = None
     cv_url: Optional[str] = None
     status: str
+    is_admin: bool = False
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class AdminLoginRequest(BaseModel):
+    username: str
+    password: str
 
 
 class LoginRequest(BaseModel):

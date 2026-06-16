@@ -22,3 +22,14 @@ def get_current_member(
     if not member:
         raise HTTPException(status_code=404, detail="Membre introuvable.")
     return member
+
+
+def get_current_admin(
+    current_member: models.Member = Depends(get_current_member),
+) -> models.Member:
+    if not current_member.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Accès réservé aux administrateurs.",
+        )
+    return current_member
