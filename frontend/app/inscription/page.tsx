@@ -15,6 +15,66 @@ const OPTIONS = [
 
 const STEP_LABELS = ["Identité", "Localisation", "Sécurité"];
 
+const COUNTRIES: { name: string; dial: string }[] = [
+  { name: "Guinée", dial: "+224" },
+  { name: "Sénégal", dial: "+221" },
+  { name: "Mali", dial: "+223" },
+  { name: "Côte d'Ivoire", dial: "+225" },
+  { name: "Burkina Faso", dial: "+226" },
+  { name: "Niger", dial: "+227" },
+  { name: "Bénin", dial: "+229" },
+  { name: "Togo", dial: "+228" },
+  { name: "Ghana", dial: "+233" },
+  { name: "Nigeria", dial: "+234" },
+  { name: "Cameroun", dial: "+237" },
+  { name: "Gabon", dial: "+241" },
+  { name: "Congo", dial: "+242" },
+  { name: "RD Congo", dial: "+243" },
+  { name: "Guinée-Bissau", dial: "+245" },
+  { name: "Guinée équatoriale", dial: "+240" },
+  { name: "Sierra Leone", dial: "+232" },
+  { name: "Libéria", dial: "+231" },
+  { name: "Gambie", dial: "+220" },
+  { name: "Mauritanie", dial: "+222" },
+  { name: "Cap-Vert", dial: "+238" },
+  { name: "Maroc", dial: "+212" },
+  { name: "Algérie", dial: "+213" },
+  { name: "Tunisie", dial: "+216" },
+  { name: "Libye", dial: "+218" },
+  { name: "Égypte", dial: "+20" },
+  { name: "Soudan", dial: "+249" },
+  { name: "Éthiopie", dial: "+251" },
+  { name: "Kenya", dial: "+254" },
+  { name: "Tanzania", dial: "+255" },
+  { name: "Rwanda", dial: "+250" },
+  { name: "Ouganda", dial: "+256" },
+  { name: "Angola", dial: "+244" },
+  { name: "Mozambique", dial: "+258" },
+  { name: "Madagascar", dial: "+261" },
+  { name: "Afrique du Sud", dial: "+27" },
+  { name: "France", dial: "+33" },
+  { name: "Belgique", dial: "+32" },
+  { name: "Suisse", dial: "+41" },
+  { name: "Allemagne", dial: "+49" },
+  { name: "Espagne", dial: "+34" },
+  { name: "Italie", dial: "+39" },
+  { name: "Portugal", dial: "+351" },
+  { name: "Royaume-Uni", dial: "+44" },
+  { name: "États-Unis", dial: "+1" },
+  { name: "Canada", dial: "+1" },
+  { name: "Brésil", dial: "+55" },
+  { name: "Chine", dial: "+86" },
+  { name: "Arabie Saoudite", dial: "+966" },
+  { name: "Émirats arabes unis", dial: "+971" },
+  { name: "Qatar", dial: "+974" },
+  { name: "Turquie", dial: "+90" },
+  { name: "Russie", dial: "+7" },
+].sort((a, b) => {
+  if (a.name === "Guinée") return -1;
+  if (b.name === "Guinée") return 1;
+  return a.name.localeCompare(b.name, "fr");
+});
+
 export default function InscriptionPage() {
   const { login } = useAuth();
   const router = useRouter();
@@ -44,6 +104,19 @@ export default function InscriptionPage() {
   });
 
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
+
+  const handleCountryChange = (countryName: string) => {
+    const country = COUNTRIES.find((c) => c.name === countryName);
+    setForm((f) => {
+      const currentDial = COUNTRIES.find((c) => f.phone.startsWith(c.dial))?.dial ?? "";
+      const phoneWithoutDial = currentDial ? f.phone.slice(currentDial.length).trimStart() : f.phone;
+      const newDial = country?.dial ?? "";
+      const newPhone = newDial
+        ? phoneWithoutDial ? `${newDial} ${phoneWithoutDial}` : newDial
+        : phoneWithoutDial;
+      return { ...f, country: countryName, phone: newPhone };
+    });
+  };
 
   const validateStep1 = () => {
     if (!form.first_name.trim() || !form.last_name.trim()) {
@@ -288,9 +361,69 @@ export default function InscriptionPage() {
           {/* ─ Étape 2 : Localisation & Contact ─ */}
           {step === 2 && (
             <div className="space-y-3">
-              <FloatField label="Pays de résidence *" value={form.country} onChange={(v) => set("country", v)} />
+              {/* Select pays */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[#5a5a6e]">Pays de résidence *</label>
+                <select
+                  value={form.country}
+                  onChange={(e) => handleCountryChange(e.target.value)}
+                  style={{
+                    padding: "12px 14px",
+                    borderRadius: "12px",
+                    border: "1.5px solid #e8e3db",
+                    background: "#fff",
+                    fontSize: "14px",
+                    color: form.country ? "#1a1a2e" : "#aaa",
+                    outline: "none",
+                    width: "100%",
+                    appearance: "auto",
+                    minHeight: "var(--touch-min)",
+                  }}
+                >
+                  <option value="" disabled>Sélectionner un pays</option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c.name} value={c.name}>
+                      {c.name} ({c.dial})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <FloatField label="Ville de résidence *" value={form.city} onChange={(v) => set("city", v)} />
-              <FloatField label="Téléphone *" value={form.phone} onChange={(v) => set("phone", v)} type="tel" />
+
+              {/* Téléphone avec indicatif affiché */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[#5a5a6e]">Téléphone *</label>
+                <div className="flex gap-2">
+                  {form.country && COUNTRIES.find((c) => c.name === form.country) && (
+                    <div className="flex items-center px-3 rounded-xl border border-[#e8e3db] bg-[#f8f6f2] text-[13px] font-bold text-[#0f5132] whitespace-nowrap flex-shrink-0">
+                      {COUNTRIES.find((c) => c.name === form.country)?.dial}
+                    </div>
+                  )}
+                  <input
+                    type="tel"
+                    value={form.phone}
+                    onChange={(e) => set("phone", e.target.value)}
+                    placeholder={
+                      COUNTRIES.find((c) => c.name === form.country)
+                        ? `${COUNTRIES.find((c) => c.name === form.country)?.dial} 6XX XX XX XX`
+                        : "Numéro de téléphone"
+                    }
+                    style={{
+                      flex: 1,
+                      padding: "12px 14px",
+                      borderRadius: "12px",
+                      border: "1.5px solid #e8e3db",
+                      background: "#fff",
+                      fontSize: "14px",
+                      color: "#1a1a2e",
+                      outline: "none",
+                      minHeight: "var(--touch-min)",
+                    }}
+                  />
+                </div>
+              </div>
+
               <div className="relative">
                 <FloatField label="Adresse email (facultatif)" value={form.contact_email} onChange={(v) => set("contact_email", v)} type="email" />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#bbb] pointer-events-none">optionnel</span>
