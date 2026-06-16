@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import API from "@/lib/api";
 import { AuthResponse } from "@/types";
 import { Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, CheckCircle2, Upload } from "lucide-react";
+import { COUNTRIES, getDialCode } from "@/lib/countries";
 
 const OPTIONS = [
   "Sciences mathématiques",
@@ -14,66 +15,6 @@ const OPTIONS = [
 ];
 
 const STEP_LABELS = ["Identité", "Localisation", "Sécurité"];
-
-const COUNTRIES: { name: string; dial: string }[] = [
-  { name: "Guinée", dial: "+224" },
-  { name: "Sénégal", dial: "+221" },
-  { name: "Mali", dial: "+223" },
-  { name: "Côte d'Ivoire", dial: "+225" },
-  { name: "Burkina Faso", dial: "+226" },
-  { name: "Niger", dial: "+227" },
-  { name: "Bénin", dial: "+229" },
-  { name: "Togo", dial: "+228" },
-  { name: "Ghana", dial: "+233" },
-  { name: "Nigeria", dial: "+234" },
-  { name: "Cameroun", dial: "+237" },
-  { name: "Gabon", dial: "+241" },
-  { name: "Congo", dial: "+242" },
-  { name: "RD Congo", dial: "+243" },
-  { name: "Guinée-Bissau", dial: "+245" },
-  { name: "Guinée équatoriale", dial: "+240" },
-  { name: "Sierra Leone", dial: "+232" },
-  { name: "Libéria", dial: "+231" },
-  { name: "Gambie", dial: "+220" },
-  { name: "Mauritanie", dial: "+222" },
-  { name: "Cap-Vert", dial: "+238" },
-  { name: "Maroc", dial: "+212" },
-  { name: "Algérie", dial: "+213" },
-  { name: "Tunisie", dial: "+216" },
-  { name: "Libye", dial: "+218" },
-  { name: "Égypte", dial: "+20" },
-  { name: "Soudan", dial: "+249" },
-  { name: "Éthiopie", dial: "+251" },
-  { name: "Kenya", dial: "+254" },
-  { name: "Tanzania", dial: "+255" },
-  { name: "Rwanda", dial: "+250" },
-  { name: "Ouganda", dial: "+256" },
-  { name: "Angola", dial: "+244" },
-  { name: "Mozambique", dial: "+258" },
-  { name: "Madagascar", dial: "+261" },
-  { name: "Afrique du Sud", dial: "+27" },
-  { name: "France", dial: "+33" },
-  { name: "Belgique", dial: "+32" },
-  { name: "Suisse", dial: "+41" },
-  { name: "Allemagne", dial: "+49" },
-  { name: "Espagne", dial: "+34" },
-  { name: "Italie", dial: "+39" },
-  { name: "Portugal", dial: "+351" },
-  { name: "Royaume-Uni", dial: "+44" },
-  { name: "États-Unis", dial: "+1" },
-  { name: "Canada", dial: "+1" },
-  { name: "Brésil", dial: "+55" },
-  { name: "Chine", dial: "+86" },
-  { name: "Arabie Saoudite", dial: "+966" },
-  { name: "Émirats arabes unis", dial: "+971" },
-  { name: "Qatar", dial: "+974" },
-  { name: "Turquie", dial: "+90" },
-  { name: "Russie", dial: "+7" },
-].sort((a, b) => {
-  if (a.name === "Guinée") return -1;
-  if (b.name === "Guinée") return 1;
-  return a.name.localeCompare(b.name, "fr");
-});
 
 export default function InscriptionPage() {
   const { login } = useAuth();
@@ -386,9 +327,9 @@ export default function InscriptionPage() {
               <div className="flex flex-col gap-1.5">
                 <label className="text-[12px] font-semibold text-[#5a5a6e]">Téléphone *</label>
                 <div className="flex gap-2">
-                  {form.country && COUNTRIES.find((c) => c.name === form.country) && (
+                  {getDialCode(form.country) && (
                     <div className="flex items-center px-3 rounded-xl border border-[#e8e3db] bg-[#f8f6f2] text-[13px] font-bold text-[#0f5132] whitespace-nowrap flex-shrink-0">
-                      {COUNTRIES.find((c) => c.name === form.country)?.dial}
+                      {getDialCode(form.country)}
                     </div>
                   )}
                   <input

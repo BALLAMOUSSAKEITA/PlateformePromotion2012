@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import API from "@/lib/api";
 import { Member } from "@/types";
+import { getDialCode } from "@/lib/countries";
 import {
   ShieldCheck, LogOut, Trash2, Loader2,
   Search, RefreshCw, AlertTriangle, Users, X, FileText,
@@ -205,7 +206,12 @@ export default function AdminDashboardPage() {
                           <div className="text-[11px] text-[#aaa] mt-0.5">{m.contact_email}</div>
                         )}
                       </td>
-                      <td className="px-4 py-3.5 text-[13px] text-[#666] hidden md:table-cell">{m.phone}</td>
+                      <td className="px-4 py-3.5 text-[13px] text-[#666] hidden md:table-cell">
+                        {getDialCode(m.country) && (
+                          <span className="text-[11px] font-bold text-[#0f5132] mr-1">{getDialCode(m.country)}</span>
+                        )}
+                        {m.phone}
+                      </td>
                       <td className="px-4 py-3.5 hidden lg:table-cell">
                         <span className="text-[13px] text-[#666]">{m.country}</span>
                         {m.city && <span className="text-[12px] text-[#bbb]">, {m.city}</span>}
