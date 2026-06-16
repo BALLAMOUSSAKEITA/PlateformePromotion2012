@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import API from "@/lib/api";
 import { Member } from "@/types";
 import {
-  ShieldCheck, LogOut, Trash2, Loader2, Users,
-  Search, RefreshCw, AlertTriangle,
+  ShieldCheck, LogOut, Trash2, Loader2,
+  Search, RefreshCw, AlertTriangle, Users, X,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -30,7 +31,6 @@ export default function AdminDashboardPage() {
       setMembres(res.data);
       setFiltered(res.data);
     } catch {
-      setError("Session expirée ou accès refusé.");
       router.push("/admin/connexion");
     } finally {
       setLoading(false);
@@ -42,14 +42,13 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const q = search.toLowerCase();
     setFiltered(
-      membres.filter(
-        (m) =>
-          m.first_name.toLowerCase().includes(q) ||
-          m.last_name.toLowerCase().includes(q) ||
-          m.member_number.toLowerCase().includes(q) ||
-          (m.phone || "").includes(q) ||
-          (m.country || "").toLowerCase().includes(q) ||
-          (m.profession || "").toLowerCase().includes(q),
+      membres.filter((m) =>
+        m.first_name.toLowerCase().includes(q) ||
+        m.last_name.toLowerCase().includes(q) ||
+        m.member_number.toLowerCase().includes(q) ||
+        (m.phone || "").includes(q) ||
+        (m.country || "").toLowerCase().includes(q) ||
+        (m.profession || "").toLowerCase().includes(q),
       ),
     );
   }, [search, membres]);
@@ -77,159 +76,186 @@ export default function AdminDashboardPage() {
     router.push("/admin/connexion");
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-[100svh] flex items-center justify-center bg-[#fefcf9]">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-6 h-6 text-[#0f5132] animate-spin" />
+          <p className="text-[13px] text-[#999]">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#0f0f1a] text-white">
+    <div className="min-h-[100svh] bg-[#fefcf9]">
+
       {/* Header */}
-      <header className="border-b border-white/5 bg-[#12121f] px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#d4a843]/10 border border-[#d4a843]/20 flex items-center justify-center">
-            <ShieldCheck className="w-4 h-4 text-[#d4a843]" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-white leading-none">Administration</p>
-            <p className="text-[11px] text-white/30 mt-0.5">Filifing – Promotion 2012</p>
+      <header className="bg-white/80 backdrop-blur-xl border-b border-[#f0ebe3] sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 h-14 sm:h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#0f5132] to-[#1a7a4c] flex items-center justify-center flex-shrink-0">
+              <span className="text-[7px] font-bold text-white tracking-wide">AAES</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[13px] font-bold text-[#1a1a2e] leading-none">Anciens Élèves</span>
+              <span className="text-[9px] font-medium text-[#999] tracking-wider uppercase">Siguiri · 2012</span>
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 bg-[#f0f7f2] rounded-lg px-3 py-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#0f5132]" />
+              <span className="text-[12px] font-medium text-[#0f5132]">Administrateur</span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-1.5 text-[13px] text-[#999] hover:text-red-600 transition-colors btn-touch py-2"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Déconnexion</span>
+            </button>
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors px-3 py-2 rounded-lg hover:bg-white/5"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          Déconnexion
-        </button>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {/* Stats */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
-            <Users className="w-4 h-4 text-[#d4a843]" />
-            <span className="text-sm font-semibold">{membres.length}</span>
-            <span className="text-xs text-white/40">membre{membres.length !== 1 ? "s" : ""}</span>
-          </div>
-          <button
-            onClick={fetchMembres}
-            disabled={loading}
-            className="flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors px-3 py-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-            Actualiser
-          </button>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-10">
+
+        {/* Titre */}
+        <div className="mb-6 sm:mb-8">
+          <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-[#d4a843] mb-0.5">Gestion</p>
+          <h1 className="font-display text-[1.5rem] sm:text-[1.75rem] text-[#1a1a2e]">Membres inscrits</h1>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 mb-4">
+          <div className="flex items-center gap-3 text-sm text-red-700 bg-red-50 border border-red-100 rounded-xl px-4 py-3 mb-5">
             <AlertTriangle className="w-4 h-4 flex-shrink-0" />
             {error}
           </div>
         )}
 
-        {/* Barre de recherche */}
-        <div className="relative mb-5">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        {/* Stats + actions */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-5">
+          <div className="flex items-center gap-2 bg-white border border-[#f0ebe3] shadow-card rounded-xl px-4 py-2.5">
+            <Users className="w-4 h-4 text-[#0f5132]" />
+            <span className="text-[14px] font-bold text-[#1a1a2e]">{membres.length}</span>
+            <span className="text-[13px] text-[#999]">membre{membres.length !== 1 ? "s" : ""}</span>
+          </div>
+          <button
+            onClick={fetchMembres}
+            className="inline-flex items-center gap-2 text-[13px] font-medium text-[#666] hover:text-[#0f5132] transition-colors btn-touch py-2 px-3"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Actualiser
+          </button>
+        </div>
+
+        {/* Recherche */}
+        <div className="relative mb-4">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#ccc]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher par nom, numéro, téléphone, pays..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder:text-white/25 outline-none focus:border-[#d4a843]/40 transition-colors"
+            className="w-full bg-white border border-[#e8e3db] rounded-xl pl-11 pr-4 py-3 text-[14px] text-[#1a1a2e] placeholder:text-[#ccc] outline-none focus:border-[#0f5132] focus:shadow-[0_0_0_3px_rgba(15,81,50,0.08)] transition-all"
           />
+          {search && (
+            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#ccc] hover:text-[#999] transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Tableau */}
-        {loading ? (
-          <div className="flex items-center justify-center py-20 text-white/30">
-            <Loader2 className="w-6 h-6 animate-spin mr-3" />
-            Chargement...
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-20 text-white/30 text-sm">
+        {filtered.length === 0 ? (
+          <div className="text-center py-20 text-[#bbb] text-[14px] bg-white rounded-2xl border border-[#f0ebe3]">
             {search ? "Aucun résultat pour cette recherche." : "Aucun membre inscrit."}
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-2xl border border-white/8">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-white/5 border-b border-white/8">
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-white/40 uppercase tracking-wider">Numéro</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-white/40 uppercase tracking-wider">Nom complet</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-white/40 uppercase tracking-wider hidden md:table-cell">Téléphone</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-white/40 uppercase tracking-wider hidden lg:table-cell">Pays / Ville</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-white/40 uppercase tracking-wider hidden lg:table-cell">Profession</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-white/40 uppercase tracking-wider">Statut</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-semibold text-white/40 uppercase tracking-wider hidden sm:table-cell">Inscription</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {filtered.map((m) => (
-                  <tr key={m.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-4 py-3.5">
-                      <span className="font-mono text-[11px] text-[#d4a843]/80 bg-[#d4a843]/8 px-2 py-1 rounded-md">
-                        {m.member_number}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <div className="font-semibold text-white/90">
-                        {m.first_name} {m.last_name}
-                      </div>
-                      {m.contact_email && (
-                        <div className="text-[11px] text-white/30 mt-0.5">{m.contact_email}</div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3.5 text-white/50 hidden md:table-cell">{m.phone}</td>
-                    <td className="px-4 py-3.5 hidden lg:table-cell">
-                      <span className="text-white/60">{m.country}</span>
-                      {m.city && <span className="text-white/30">, {m.city}</span>}
-                    </td>
-                    <td className="px-4 py-3.5 text-white/50 hidden lg:table-cell max-w-[160px] truncate">{m.profession}</td>
-                    <td className="px-4 py-3.5">
-                      <span className={`text-[11px] font-semibold px-2 py-1 rounded-full ${
-                        m.status === "actif"
-                          ? "bg-emerald-500/10 text-emerald-400"
-                          : "bg-white/5 text-white/30"
-                      }`}>
-                        {m.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3.5 text-[11px] text-white/30 hidden sm:table-cell whitespace-nowrap">
-                      {new Date(m.created_at).toLocaleDateString("fr-FR")}
-                    </td>
-                    <td className="px-4 py-3.5">
-                      {confirmId === m.id ? (
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleDelete(m.id)}
-                            disabled={deletingId === m.id}
-                            className="text-[11px] font-semibold text-red-400 hover:text-red-300 transition-colors px-2 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 flex items-center gap-1"
-                          >
-                            {deletingId === m.id ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                              "Confirmer"
-                            )}
-                          </button>
-                          <button
-                            onClick={() => setConfirmId(null)}
-                            className="text-[11px] text-white/30 hover:text-white/60 transition-colors px-2 py-1"
-                          >
-                            Annuler
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => setConfirmId(m.id)}
-                          className="text-white/20 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-500/10"
-                          title="Supprimer ce membre"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </td>
+          <div className="bg-white rounded-2xl border border-[#f0ebe3] shadow-card overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[#f5f3f0]">
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider">Numéro</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider">Nom complet</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider hidden md:table-cell">Téléphone</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider hidden lg:table-cell">Pays / Ville</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider hidden lg:table-cell">Profession</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider">Statut</th>
+                    <th className="text-left px-4 py-3 text-[11px] font-bold text-[#bbb] uppercase tracking-wider hidden sm:table-cell">Inscription</th>
+                    <th className="px-4 py-3" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-[#f8f6f2]">
+                  {filtered.map((m) => (
+                    <tr key={m.id} className="hover:bg-[#fafaf8] transition-colors">
+                      <td className="px-4 py-3.5">
+                        <span className="font-mono text-[11px] font-bold text-[#0f5132] bg-[#f0f7f2] px-2 py-1 rounded-md">
+                          {m.member_number}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <div className="font-semibold text-[#1a1a2e] text-[13px]">
+                          {m.first_name} {m.last_name}
+                        </div>
+                        {m.contact_email && (
+                          <div className="text-[11px] text-[#aaa] mt-0.5">{m.contact_email}</div>
+                        )}
+                      </td>
+                      <td className="px-4 py-3.5 text-[13px] text-[#666] hidden md:table-cell">{m.phone}</td>
+                      <td className="px-4 py-3.5 hidden lg:table-cell">
+                        <span className="text-[13px] text-[#666]">{m.country}</span>
+                        {m.city && <span className="text-[12px] text-[#bbb]">, {m.city}</span>}
+                      </td>
+                      <td className="px-4 py-3.5 text-[13px] text-[#666] hidden lg:table-cell max-w-[160px] truncate">{m.profession}</td>
+                      <td className="px-4 py-3.5">
+                        <span className={`text-[11px] font-semibold px-2 py-1 rounded-full ${
+                          m.status === "actif"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                            : "bg-[#f5f3f0] text-[#999]"
+                        }`}>
+                          {m.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3.5 text-[12px] text-[#bbb] hidden sm:table-cell whitespace-nowrap">
+                        {new Date(m.created_at).toLocaleDateString("fr-FR")}
+                      </td>
+                      <td className="px-4 py-3.5">
+                        {confirmId === m.id ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleDelete(m.id)}
+                              disabled={deletingId === m.id}
+                              className="text-[11px] font-semibold text-red-600 hover:text-red-700 transition-colors px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 border border-red-100 flex items-center gap-1 btn-touch"
+                            >
+                              {deletingId === m.id
+                                ? <Loader2 className="w-3 h-3 animate-spin" />
+                                : "Confirmer"}
+                            </button>
+                            <button
+                              onClick={() => setConfirmId(null)}
+                              className="text-[11px] text-[#999] hover:text-[#666] transition-colors px-2 py-1 btn-touch"
+                            >
+                              Annuler
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmId(m.id)}
+                            className="text-[#ddd] hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50 btn-touch flex items-center justify-center"
+                            title="Supprimer ce membre"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </main>
